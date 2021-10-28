@@ -12,8 +12,6 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
 
 
-Add in plots of data using 1-d simulated data
-
 \color{red}
 Ok, so I think I start off a bit loose to get people comfortable and bring out some playing cards. 
 
@@ -34,11 +32,16 @@ What's the point?  How can I best predict the number of card suits the next pers
 \color{red}
 - Chat with them.
 - Lead them to talk about a sample.
-- Simulate values of $Y$ using an app, placing them on a histogram or dot plot.
+- Simulate values of $Y$ using an app (in the repo, use `shiny::runGitHub("caryAcademy", username = "jbpost2", subdir = "CardSim", ref = "main")`.
 - Lead them to ideas of using something like the sample mean or median as the predicted value.
 - Why something like the sample mean or sample median?  What are we really trying to do?  Find a value that is 'close' to the most values, i.e. something in the center being the most logical thing to do.
 
 \color{black}
+
+```{r, echo = FALSE, out.width="350px", fig.align='center'}
+knitr::include_graphics("correctHist.png")
+```
+
 
 ## Loss function  
 
