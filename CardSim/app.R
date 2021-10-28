@@ -90,9 +90,9 @@ server <- function(input, output) {
         if(nrow(values$data) == 0){
             
         } else {
-            values$data$Correct %>% 
-                as.numeric() %>% 
-                hist(main = "Histogram of # Correct", xlab = "Number Correct", breaks = 0:11/2-0.25)
+            plotData <- values$data %>% 
+                transmute(Correct = as.numeric(Correct)) 
+            hist(plotData$Correct, main = "Histogram of # Correct", xlab = "Number Correct", breaks = 0:11/2-0.25)
         }
     })
 }
