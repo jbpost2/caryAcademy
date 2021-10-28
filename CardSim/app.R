@@ -108,11 +108,11 @@ buildMetric <- function(c, x, freq, metric){
     n <- sum(freq$Counts)
     if(length(count) == 0) count <- 0
     if(metric == "MSE") {
-        round((count/n)*(x-c)^2,2)
+        (count/n)*(x-c)^2
     } else if(metric =="MAE"){
-        round((count/n)*abs(x-c),2)
+        (count/n)*abs(x-c)
     } else if(metric == "MQE"){
-        round((count/n)*(x-c)^4,2)
+        (count/n)*(x-c)^4
     }
 }
 
@@ -191,7 +191,8 @@ server <- function(input, output) {
             transmute(Correct = as.numeric(Correct))
         freq <- plotData %>% 
             group_by(Correct) %>%
-            summarize(Counts = n())
+            summarize(Counts = n()) %>%
+            drop_na()
 
         paste0("The MSE using a c value of ", input$c, " is: \n", 
                buildString(input$c, 0, freq, input$metric), " + \n",

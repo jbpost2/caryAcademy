@@ -55,7 +55,7 @@ Let's assume we have a sample of $n$ people that each guessed five cards.  Call 
 $$y_1 - c, (y_1-c)^2, |y_1-c|$$
 $$\sum_{i=1}^{n} (y_i-c), \sum_{i=1}^{n} (y_i-c)^2, \sum_{i=1}^{n} |y_i-c|$$
 $$\frac{1}{n}\sum_{i=1}^{n} (y_i-c), \frac{1}{n}\sum_{i=1}^{n} (y_i-c)^2, \frac{1}{n}\sum_{i=1}^{n} |y_i-c|$$
-- Quick app to look at how the measures work on the data set already simulated - give the ability to pick a c and at least these metrics, but maybe allow any metric to be typed in...
+- Quick app to look at how the measures work in the app.
 - In the end an objective function (mean squared error here) must be created to minimize that uses a 'Loss function', and we'll talk about why we'll use the common squared error loss:
 $$g(y_1,...,y_n) = \frac{1}{n}\sum_{i=1}^{n} L(y_i, c) = \frac{1}{n}\sum_{i=1}^{n}(y_i-c)^2$$
 
@@ -92,7 +92,6 @@ Is there an optimal value $c$ for the **expected value** of the loss function?
 That is, can we minimize (as a function of $c$) $E\left[(Y-c)^2\right]$?
 
 \color{red}
-- Maybe visualize this in the same app as above (visualize the quadratic function weighted by the distribution and allow for c to be chosen)
 - I think I'll start them out on this one as theory leads to more difficult ideas and I'm not sure if you did general expected values.
 - In the end though we end up with $np$ or 1.25.
 - I'll show/discuss that this works generally for any distribution $p_Y(y)$ that has a mean
@@ -130,7 +129,10 @@ When we considered just $Y$ by itself and used squared error loss, we know that 
 $$E\left[(Y-c)^2\right]$$
 as a function of $c$.  Given data, we used $\hat{\mu} = \bar{y}$ as our prediction.  
 
-** Insert Plot **
+
+```{r, echo = FALSE, out.width="350px", fig.align='center'}
+knitr::include_graphics("correctHistPlus.png")
+```
 
 
 Harder (and more interesting) problem is to consider predicting a (response) variable $Y$ as a function of an explanatory variable $x$.
@@ -183,7 +185,7 @@ $$g(y_1,...,y_n|x_1,...,x_n) = \sum_{i=1}^{n} (y_i-\hat{\beta}_0-\hat{\beta}_1x_
 This equation is often called the 'sum of squared errors (or residuals)' or the 'residual sum of squares'.  
 
 \color{red}
-Update this with the data from minesweeper but show a plot like this or perhaps just over a portion that looks like it could be modeled linearly.
+I'll have code at the ready to update and rerender this plot using the data from minesweeper but I'll show this plot for their version.
 \color{black}
 ```{r echo = FALSE, out.width = "350px", fig.align='center'}
 plot(x = cars$speed, y= cars$dist, main = "SLR: X = Speed of Car, Y = Distance to Stop", xlab = "Speed", ylab = "Distance")
@@ -198,6 +200,9 @@ Calculus allows us to find the 'least squares' estimators, $\hat\beta_0$ and $\h
 Do they know partial derivatives?  I'm not sure.  I think we'll be running low on time here anyway, so maybe I'll just talk about the idea of how to get them, set up the equations and then just give the answers.
 $$\hat{\beta}_1 = \frac{\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}$$
 $$\hat{\beta}_0 = \bar{y}-\bar{x}\hat{\beta}_1$$
+
+Then we'll jump into R and find the values for the minesweeper data and use it to predict by "hand" (plugging it in manually in R).  
+
 \color{black}
 
 
@@ -367,6 +372,10 @@ ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
 	geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "Red") +
 	ggtitle("Scatter Plot with 95% PI & 95% CI")
 ```
+
+\color{red}
+If there is time, I'd have them jump into R and run the code to read in the minesweeper data.  Then they could use `lm()` to fit a model and predict.  
+\color{black}
 
 ## Multiple Linear Regression
 
