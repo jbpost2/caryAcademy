@@ -4,11 +4,15 @@ output:
   pdf_document:
     toc: yes
     toc_depth: 1
+urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
+
+
+Add in plots of data using 1-d simulated data
 
 \color{red}
 Ok, so I think I start off a bit loose to get people comfortable and bring out some playing cards. 
@@ -47,9 +51,10 @@ Let's assume we have a sample of $n$ people that each guessed five cards.  Call 
 - Think about things like:
 $$y_1 - c, (y_1-c)^2, |y_1-c|$$
 $$\sum_{i=1}^{n} (y_i-c), \sum_{i=1}^{n} (y_i-c)^2, \sum_{i=1}^{n} |y_i-c|$$
+$$\frac{1}{n}\sum_{i=1}^{n} (y_i-c), \frac{1}{n}\sum_{i=1}^{n} (y_i-c)^2, \frac{1}{n}\sum_{i=1}^{n} |y_i-c|$$
 - Quick app to look at how the measures work on the data set already simulated - give the ability to pick a c and at least these metrics, but maybe allow any metric to be typed in...
-- In the end an objective function must be created to minimize that uses a 'Loss function', and we'll talk about why we'll use the common squared error loss:
-$$g(y_1,...,y_n) = \sum_{i=1}^{n} L(y_i, c) = \sum_{i=1}^{n}(y_i-c)^2$$
+- In the end an objective function (mean squared error here) must be created to minimize that uses a 'Loss function', and we'll talk about why we'll use the common squared error loss:
+$$g(y_1,...,y_n) = \frac{1}{n}\sum_{i=1}^{n} L(y_i, c) = \frac{1}{n}\sum_{i=1}^{n}(y_i-c)^2$$
 
 \color{black}
 Can we choose an 'optimal' value for $c$ to minimize this function?  Calculus to the rescue!  
@@ -64,7 +69,7 @@ Steps to minimize a function with respect to c:
 \color{red}
 Answer comes out to be $\bar{y}$ as the minimizer.  
 
-\textbf{Big wrap:} This means that the sample mean is the best prediction when using squared error loss.
+\textbf{Big wrap:} This means that the sample mean is the best prediction when using squared error loss (root mean square error).
 \color{black} 
 
 ## Using a Population Distribution  
@@ -99,7 +104,7 @@ That is, can we minimize (as a function of $c$) $E\left[(Y-c)^2\right]$?
 This would be the 2nd (short day) material.  
 
 - Recap the big idea of prediction:  
-    + Need to quantify how well we are doing (squared error loss) 
+    + Need to quantify how well we are doing (squared error loss and MSE) 
     + Sample mean is optimal if we have a sample
     + Given a theoretical distribution, expected squared error loss is optimized at the mean of the distribution  
     
@@ -116,6 +121,15 @@ This would be the 2nd (short day) material.
 
 # Relating Explanatory Variables in Prediction  
 
+$Y$ is a random variable and we'll consider the x values fixed (we'll denote this as $Y|x$).  We hope to learn about the relationship between $Y$ and $x$.  
+
+When we considered just $Y$ by itself and used squared error loss, we know that $E(Y) = \mu$ minimizes
+$$E\left[(Y-c)^2\right]$$
+as a function of $c$.  Given data, we used $\hat{\mu} = \bar{y}$ as our prediction.  
+
+** Insert Plot **
+
+
 Harder (and more interesting) problem is to consider predicting a (response) variable $Y$ as a function of an explanatory variable $x$.
 
 ```{r, echo = FALSE, out.width = "350px", fig.align='center'}
@@ -128,34 +142,34 @@ lines(rep(x, 15), yerr, type = "p", cex = 0.4)
 ```
 
 
-$Y$ is a random variable and we'll consider the x values fixed (we'll denote this as $Y|x$).  We hope to learn about the relationship between $Y$ and $x$.  If we consider squared error loss, we know that $E(Y) = \mu$ minimizes
-$$E\left[(Y-c)^2\right]$$
-as a function of $c$.  Given data, we used $\hat{\mu} = \bar{y}$ as our prediction.  
 
-Now that we have an $x$, $E(Y|x)$ will still minimize this.  We can call this true unknown value $$E(Y|x) = f(x)$$  
 
-Given observed $Y$'s and $x$'s, we can approximate this function and denote that estimate as $\hat{f}(x)$.  This $\hat{f}(x)$ will minimize 
+Now that we have an $x$, $E(Y|x)$ will minimize 
+$$E\left[(Y-c)^2|x\right]$$
+We can call this true unknown value $E(Y|x) = f(x)$.  That is, the average value of $Y$ will now be considered as a function of $x$.
 
-$$g(y_1,...,y_n|x_1,...,x_n) = \sum_{i=1}^{n}L(y_i, \hat{f}(x_i)) = \sum_{i=1}^{n} (y_i-\hat{f}(x_i))^2$$
+Given observed $Y$'s and $x$'s, we can estimate this function as $\hat{f}(x)$ (think $\bar{y}$ from before).  This $\hat{f}(x)$ will minimize 
+
+$$g(y_1,...,y_n|x_1,...,x_n) = \frac{1}{n}\sum_{i=1}^{n}L(y_i, \hat{f}(x_i)) = \frac{1}{n}\sum_{i=1}^{n} (y_i-\hat{f}(x_i))^2$$
 
 ## Approximating $f(x)$
 
-Although the true relationship is most certainly nonlinear, we may be ok approximating the relationship linearly.  For example, consider the same plot but between 0 and 5 only:
+Although the true relationship is most certainly nonlinear, we may be ok approximating the relationship linearly.  For example, consider the same plot as above but between 0 and 5 only:
 
-```{r  echo = FALSE, out.width = "350px", fig.align='center'}
+```{r  echo = FALSE, out.width = "300px", fig.align='center'}
 plot(x, y, type = "l", lwd = 5, col = "blue", ylim = c(-250, 600), main = "Blue line, f(x), is the 'true' relationship between x and y", xlim = c(0, 5))
 lines(rep(x, 15), yerr, type = "p", cex = 0.4)
 ```
 
 That's pretty linear.  Consider plot between 5 and 15:
 
-```{r, echo = FALSE, out.width = "350px", fig.align='center'}
+```{r, echo = FALSE, out.width = "300px", fig.align='center'}
 plot(x, y, type = "l", lwd = 5, col = "blue", ylim = c(-250, 600), main = "Blue line, f(x), is the 'true' relationship between x and y \n Dashed line is the linear approximation", xlim = c(5, 15))
 lines(rep(x, 15), yerr, type = "p", cex = 0.4)
 lines(x, y = -10*x+200, lwd = 4, col = "black", lty = 2)
 ```
 
-Line still does a reasonable job and is often an ok approximation in simple cases.  
+Line still does a reasonable job and is often used as a basic approximation.  
 
 ## Linear Regression Model 
 
@@ -168,14 +182,14 @@ This equation is often called the 'sum of squared errors (or residuals)' or the 
 \color{red}
 Update this with the data from minesweeper but show a plot like this or perhaps just over a portion that looks like it could be modeled linearly.
 \color{black}
-```{r deviations, echo = FALSE}
+```{r echo = FALSE, out.width = "350px", fig.align='center'}
 plot(x = cars$speed, y= cars$dist, main = "SLR: X = Speed of Car, Y = Distance to Stop", xlab = "Speed", ylab = "Distance")
 fit <- lm(dist ~ speed, data = cars)
 abline(fit)
 segments(cars$speed,cars$dist,cars$speed,predict(fit))
 ```
 
-Calculus allows us to find the 'least squares' estimates for $\beta_0$ and $\beta_1$ in a nice closed-form!
+Calculus allows us to find the 'least squares' estimators, $\hat\beta_0$ and $\hat\beta_1$ in a nice closed-form!
 
 \color{red}
 Do they know partial derivatives?  I'm not sure.  I think we'll be running low on time here anyway, so maybe I'll just talk about the idea of how to get them, set up the equations and then just give the answers.
@@ -186,6 +200,10 @@ $$\hat{\beta}_0 = \bar{y}-\bar{x}\hat{\beta}_1$$
 
 \newpage
 
+\color{red}
+Ok, day 3 here.  Get into R and do some model fitting and predicting.  Start with a quick recap here
+\color{black}
+
 # Fitting a Linear Regression Model in R
 
 \textbf{Recap:} Our goal is to predict a value of $Y$ while including an explanatory variable $x$.  We are assuming we have a sample of $(x_i, y_i)$ pairs, $i = 1,...,n$.  
@@ -193,49 +211,111 @@ $$\hat{\beta}_0 = \bar{y}-\bar{x}\hat{\beta}_1$$
 The Simple Linear Regression (SLR) model can be used:
 
 $$\hat{f}(x_i) = \hat{y}_i = \hat\beta_0 + \hat\beta_1x_i$$
-where 
-  - $y_i$ is our response for the $i^{th}$ observation  
-  - $x_i$ is the value of our explanatory variable for the $i^{th}$ observation  
-  - $\beta_0$ is the y intercept  
-  - $\beta_1$ is the slope  
+where   
+
+  - $y_i$ is our response for the $i^{th}$ observation
+  - $x_i$ is the value of our explanatory variable for the $i^{th}$ observation 
+  - $\beta_0$ is the y intercept
+  - $\beta_1$ is the slope
 
 The best model to use if we consider squared error loss has 
 $$\hat{\beta}_1 = \frac{\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}$$
 $$\hat{\beta}_0 = \bar{y}-\bar{x}\hat{\beta}_1$$
 
+called the 'least squares estimates'.
+
 
 ## Data Intro
 
-Plots and such too.  
+This [dataset contains information about used motorcycles and their cost](https://www.kaggle.com/nehalbirla/motorcycle-dataset?select=BIKE+DETAILS.csv). 
+
+This data can be used for a lot of purposes such as price prediction to exemplify the use of linear regression in Machine Learning.  The columns in the given dataset are as follows:
+
+- name
+- selling price
+-year
+-seller type
+-owner
+-km driven
+-ex showroom price
+
+The data are available to download from this URL:  
+<https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.csv>
+
+
+\color{red}
+I think the exploration and modeling would be better to do live and ask them for input as we go through it.  I'll put some stuff here and then we can talk about it.
+\color{black}
+
+## Read in Data and Explore!  
+
+```{r warning = FALSE, message = FALSE}
+library(tidyverse)
+bikeData <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.csv")
+bikeData <- bikeData %>% tidyr::drop_na()
+bikeData %>% 
+  select(selling_price, year, km_driven, ex_showroom_price, name, everything())
+```
+Our 'response' variable here is the `selling_price` and we could use the variable `year`, `km_driven`, or `ex_showroom_price` as the explanatory variable.  Let's make some plots and summaries to explore.
+
+```{r, out.width = "350px", fig.align='center', warning = FALSE, message = FALSE}
+summary(bikeData)
+bikeData %>% 
+  group_by(owner) %>% 
+  summarize(mean = mean(selling_price), 
+            median = median(selling_price), 
+            sd = sd(selling_price), IQR = 
+              IQR(selling_price))
+library(GGally)
+ggpairs(bikeData %>% 
+          select(-name))
+
+g <- ggplot(data = bikeData, aes(y = selling_price))
+g + geom_jitter(aes(x = year, color = km_driven))
+g + geom_point(aes(x = ex_showroom_price), size = 0.75)
+g <- ggplot(data = filter(bikeData, ex_showroom_price < 100000), aes(y = selling_price))
+g + 
+  geom_point(aes(x = ex_showroom_price, color = year, size = km_driven)) +
+  scale_color_gradientn(colours = rainbow(5))
+```
 
 ## 'Fitting' the Model  
 
-- Basic *linear model* fits done with `lm()`  
+- Basic *linear model* fits done with `lm()`.  First argument is a `formula`:
+
+$$response~variable \sim modeling~variable(s)$$
+
+We specify the modeling variable(s) with `+` separating variables.  
 
 ```{r}
-lm(dist ~ speed, data = cars)
+fit <- lm(selling_price ~ ex_showroom_price, data = bikeData)
+fit
 ```
 
-- Save as object
+- We can easily pull off things like the coefficients.
 ```{r}
-fit <- lm(dist ~ speed, data = cars)
 coefficients(fit) #helper function
-residuals(fit) #helper function
-summary(fit)
 ```
 
+We can also look at the fit of the line on the graph.
 
-- Add fit to our scatter plot
-```{r,eval=FALSE}
-ggplot(cars, aes(x = speed, y = dist)) +
+```{r, out.width = "300px", fig.align='center', warning = FALSE, message = FALSE}
+ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
   geom_point() +
-  geom_smooth(method = "lm") + 
+  geom_smooth(method = "lm")
+ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_x_continuous(limits = c(25000, 100000)) +
+  scale_y_continuous(limits = c(0, 120000))
 ```
 
+## Predicting!  
 
-- Now can predict y for a given x
+Now can predict the `selling_price` for a given `ex_showroom_price`.  
+
 ```{r}
-predict(fit, newdata = data.frame(speed = c(42, 5)))
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000)))
 ```
 
 
@@ -248,7 +328,7 @@ We often assume that we observe our response variable $Y$ as a function of the l
 $$Y_i = \beta_0+\beta_1x_i + E_i$$
 where the errors come from a Normal distribution with mean 0 and variance $\sigma^2$ ($E_i\stackrel{iid}\sim N(0,\sigma^2)$)
 
-If we do this and use probability theory/maximum likelihood, we will get the same estimates as above!
+If we do this and use probability theory  (maximum likelihood), we will get the same estimates as above!
 If the normality assumption is reasonable, we then also gain knowledge of the distribution of our estimators of the intercept and slope ($\hat\beta_0$ and $\hat\beta_1$).  
 
 These allow us to create confidence intervals or conduct hypothesis tests.
@@ -256,59 +336,130 @@ However, these assumptions aren’t needed to simply do prediction (but are usef
 
 - Get SE for prediction
 ```{r}
-predict(fit, newdata = data.frame(speed = c(42, 5)), se.fit = TRUE)
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000)), se.fit = TRUE)
 ```
 
 - Get confidence interval for mean response
 ```{r}
-predict(fit, newdata = data.frame(speed = c(42, 5)),
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000)),
         se.fit = TRUE, interval = "confidence")
 ```
 
 - Get prediction interval for new response
 ```{r}
-predict(fit, newdata = data.frame(speed = c(42, 5)),
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000)),
         se.fit = TRUE, interval = "prediction")
 ```
 
+- Can see the confidence and prediction bands on the plot:
 
-- Confidence interval is automatically added to ggplot scatter plots with a `geom_smooth()` (called `se` unfortunately...)
+```{r, warning = FALSE, out.width = "350px", fig.align='center', message = FALSE}
+library(ciTools)
+bikeData <- bikeData %>% 
+  add_pi(fit, names = c("lower", "upper"))
 
-```{r}
-library(ggplot2)
-ggplot(cars, aes(x = speed, y = dist)) + geom_point() +
-  geom_smooth(method = "lm", se = TRUE) #TRUE by default, 95% CI
-```
-
-- Add PI easily with packages (install `ciTools` package)
-
-```{r, warning = FALSE, eval = FALSE}
-cars <- cars %>% ciTools::add_pi(fit, names = c("lower", "upper"))
-
-ggplot(cars, aes(x = speed, y = dist)) +
+ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
   geom_point() + 
 	geom_smooth(method = "lm", fill = "Blue") +
 	geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "Red") +
 	ggtitle("Scatter Plot with 95% PI & 95% CI")
 ```
 
-- Diagnostic plots easily found using `plot()` 
+## Multiple Linear Regression
 
-```{r,eval=FALSE}
-plot(fit)
+We can add in more than one explanatory variable using the `formula` for `lm()`.  The ideas all follow through!
+
+```{r}
+fit <- lm(selling_price ~ ex_showroom_price + year + km_driven, data = bikeData)
+fit
 ```
 
+To predict we now need to specify values for all the explanatory variables.
+
+```{r}
+data.frame(ex_showroom_price = c(50000, 75000),
+                                  year = c(2010, 2011), 
+                                  km_driven = c(15000, 10000))
+
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000),
+                                  year = c(2010, 2011), 
+                                  km_driven = c(15000, 10000)),
+        se.fit = TRUE, interval = "confidence")
+```
+
+Difficult to visualize the model fit though!
+
+\color{red}
+Not sure if we'll have time for this or if these would go in day 4.  Will depend a bit on the inclusion/exclusion of the confidence/prediction bands.
+\color{black}
 
 ## Evaluating Model Accuracy
 
+Which model is better?  Ideally we want a model that can predict **new** data better, not the data we've already seen.  We need a **test** set to predict on.  We also need to quantify what me mean by better!  
 
-## Kaggle Competition 
+### Training and Test Sets
 
-Data and they try
+We can split the data into a **training set** and **test set**.  
+
+```{r, echo = FALSE, out.width="400px"}
+knitr::include_graphics("trainingtest.png")
+```
+
+- On the training set we can fit (or train) our models.  The data from the test set isn't used at all in this process.
+- We can then predict for the test set observations (for the combinations of explanatory variables seen in the test set).  Can then compare the predicted values to the actual observed responses from the test set.
+
+Split data randomly:
+
+```{r}
+set.seed(1)
+numObs <- nrow(bikeData)
+index <- sample(1:numObs, size = 0.7*numObs, replace = FALSE)
+train <- bikeData[index, ]
+test <- bikeData[-index, ]
+```
+
+Fit the models on the training data only.
+
+```{r}
+fitSLR <- lm(selling_price ~ ex_showroom_price , data = train)
+fitMLR <- lm(selling_price ~ ex_showroom_price + year + km_driven, data = train)
+```
+
+Predict on the test set.
+```{r}
+predSLR <- predict(fitSLR, newdata = test)
+predMLR <- predict(fitMLR, newdata = test)
+tibble(predSLR, predMLR, test$selling_price)
+```
+
+### Root Mean Square Error
+
+Which is better??  Can use squared error loss to evaluate!  (Square root of the mean squared error loss is often reported instead and is called RMSE or Root Mean Square Error.)
+
+```{r}
+sqrt(mean((predSLR - test$selling_price)^2))
+sqrt(mean((predMLR - test$selling_price)^2))
+```
+
+MLR fit does much better at predicting!  
 
 
 \newpage
 
-# kNN as an alternative  
+# Another Modeling Approach
 
-# kNN on Kaggle
+\color{red}
+Day 4:
+
+I was going to either talk about $kNN$ or a basic regression tree here.  Only issue is that neither really uses stuff from your class explicitly.  Thoughts?  I'd like to do some fun-ish thing to introduce it.  Talk a little about the math.  Fit it in R and then predict with it.  
+\color{black}
+
+# Kaggle Competition
+
+\color{red}
+Last day would be discussion the Kaggle competition here:
+<https://www.kaggle.com/c/house-prices-advanced-regression-techniques/overview>
+
+Perhaps split them into teams of two or three.  Have them fit some models and submit to see how they do.  
+
+I'd have some basic code they could use to read the data in, split it into training and test so they can select their model, create predictions, and output them to a csv for submission (evaluation is log prediction minus log of the actual value).
