@@ -5,6 +5,8 @@ output:
     toc: yes
     toc_depth: 1
 urlcolor: blue
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -19,6 +21,7 @@ Ok, so I think I start off a bit loose to get people comfortable and bring out s
 - Reshuffle and repeat giving them five cards/guesses.
 - Then I'll repeat with another three-four students. 
 - \# correctly guessed will be noted somewhere
+- They've done a similar thing before but now an emphasis on guessing the next \# of correct.
 
 What's the point?  How can I best predict the number of card suits the next person will get right?
 \color{black}
@@ -97,6 +100,12 @@ That is, can we minimize (as a function of $c$) $E\left[(Y-c)^2\right]$?
 - I'll show/discuss that this works generally for any distribution $p_Y(y)$ that has a mean
 - Discuss the relationship with this and a sample (1/n weight for each point vs $p_Y(y)$ weight for each.)
 - \textbf{Big idea:} This implies that $\mu$ is the best predictor to use if you are considering minimizing the expected squared error loss.
+
+HW for after day 1:
+
+- Give them a data set and have them find the mean in R and note that the prediction they would use is that.
+- Have them play minesweeper and record the data appropriately.  Ask them to produce a best guess for their \# of overall bombs.  
+- Give them a partial derivative question to practice on.
 
 \color{black}
 
@@ -182,16 +191,21 @@ The (fitted) linear regression model uses $\hat{f}(x) = \hat\beta_0+\hat\beta_1x
 
 $$g(y_1,...,y_n|x_1,...,x_n) = \sum_{i=1}^{n} (y_i-\hat{\beta}_0-\hat{\beta}_1x_i)^2$$
 
-This equation is often called the 'sum of squared errors (or residuals)' or the 'residual sum of squares'.  
+ This equation is often called the 'sum of squared errors (or residuals)' or the 'residual sum of squares'.  The model for the data, $E(Y|x) = f(x) = \beta_0+\beta_1 x$ is called the Simple Linear Regression (SLR) model. 
 
 \color{red}
-I'll have code at the ready to update and rerender this plot using the data from minesweeper but I'll show this plot for their version.
+I'll have code at the ready to update and rerender this plot using their data from minesweeper.
 \color{black}
 ```{r echo = FALSE, out.width = "350px", fig.align='center'}
-plot(x = cars$speed, y= cars$dist, main = "SLR: X = Speed of Car, Y = Distance to Stop", xlab = "Speed", ylab = "Distance")
-fit <- lm(dist ~ speed, data = cars)
+set.seed(1)
+#create data for minesweeper for first pass
+bombs <- rep(30:55, each = 10)
+minesweeper <- data.frame(bombs = bombs, clicks = 25 - bombs/3 + round(rnorm(length(bombs), mean = 0, sd = 2)))
+
+plot(x = minesweeper$bombs, y= minesweeper$clicks, main = "SLR: X = # of Bombs, Y = # of Clicks", xlab = "Bombs", ylab = "Clicks")
+fit <- lm(clicks ~ bombs, data = minesweeper)
 abline(fit)
-segments(cars$speed,cars$dist,cars$speed,predict(fit))
+segments(minesweeper$bombs, minesweeper$clicks, y1 = predict(fit))
 ```
 
 Calculus allows us to find the 'least squares' estimators, $\hat\beta_0$ and $\hat\beta_1$ in a nice closed-form!
@@ -237,15 +251,15 @@ called the 'least squares estimates'.
 
 This [dataset contains information about used motorcycles and their cost](https://www.kaggle.com/nehalbirla/motorcycle-dataset?select=BIKE+DETAILS.csv). 
 
-This data can be used for a lot of purposes such as price prediction to exemplify the use of linear regression in Machine Learning.  The columns in the given dataset are as follows:
+From the information page: This data can be used for a lot of purposes such as price prediction to exemplify the use of linear regression in Machine Learning.  The columns in the given dataset are as follows:
 
 - name
 - selling price
--year
--seller type
--owner
--km driven
--ex showroom price
+- year
+- seller type
+- owner
+- km driven
+- ex showroom price
 
 The data are available to download from this URL:  
 <https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.csv>
@@ -261,22 +275,20 @@ I think the exploration and modeling would be better to do live and ask them for
 library(tidyverse)
 bikeData <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.csv")
 bikeData <- bikeData %>% tidyr::drop_na()
-bikeData %>% 
-  select(selling_price, year, km_driven, ex_showroom_price, name, everything())
+select(bikeData, selling_price, year, km_driven, ex_showroom_price, name, everything())
 ```
 Our 'response' variable here is the `selling_price` and we could use the variable `year`, `km_driven`, or `ex_showroom_price` as the explanatory variable.  Let's make some plots and summaries to explore.
 
 ```{r, out.width = "350px", fig.align='center', warning = FALSE, message = FALSE}
 summary(bikeData)
-bikeData %>% 
-  group_by(owner) %>% 
-  summarize(mean = mean(selling_price), 
-            median = median(selling_price), 
-            sd = sd(selling_price), IQR = 
-              IQR(selling_price))
+summarize(group_by(bikeData, owner),
+         mean = mean(selling_price),
+         median = median(selling_price),
+         sd = sd(selling_price),
+         IQR = IQR(selling_price))
+
 library(GGally)
-ggpairs(bikeData %>% 
-          select(-name))
+ggpairs(select(bikeData, -name))
 
 g <- ggplot(data = bikeData, aes(y = selling_price))
 g + geom_jitter(aes(x = year, color = km_driven))
@@ -289,20 +301,27 @@ g +
 
 ## 'Fitting' the Model  
 
-- Basic *linear model* fits done with `lm()`.  First argument is a `formula`:
-
+Basic *linear model* fits done with `lm()`.  First argument is a `formula`:
 $$response~variable \sim modeling~variable(s)$$
 
-We specify the modeling variable(s) with `+` separating variables.  
+We specify the modeling variable(s) with a `+` sign separating variables.  With SLR, we only have one variable on the right hand side.
 
 ```{r}
 fit <- lm(selling_price ~ ex_showroom_price, data = bikeData)
 fit
 ```
 
-- We can easily pull off things like the coefficients.
+We can easily pull off things like the coefficients.
 ```{r}
 coefficients(fit) #helper function
+```
+
+Manually predict for an `ex_showroom_price` of 50000:
+
+```{r}
+intercept <- coefficients(fit)[1]
+slope <- coefficients(fit)[2]
+intercept + slope * 50000
 ```
 
 We can also look at the fit of the line on the graph.
@@ -320,42 +339,39 @@ ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
 
 ## Predicting!  
 
-Now can predict the `selling_price` for a given `ex_showroom_price`.  
+Can predict the `selling_price` for a given `ex_showroom_price` easily using the `predict()` function.  
 
 ```{r}
-predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000)))
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)))
 ```
 
 
 ## Error Assumptions
-\color{red}
-Not sure about adding this in but it would help connect things with what they are doing in class... 
-\color{black}
 
-We often assume that we observe our response variable $Y$ as a function of the line plus random errors:
+Although, not needed for prediction, we often assume that we observe our response variable $Y$ as a function of the line plus random errors:
 $$Y_i = \beta_0+\beta_1x_i + E_i$$
 where the errors come from a Normal distribution with mean 0 and variance $\sigma^2$ ($E_i\stackrel{iid}\sim N(0,\sigma^2)$)
 
-If we do this and use probability theory  (maximum likelihood), we will get the same estimates as above!
-If the normality assumption is reasonable, we then also gain knowledge of the distribution of our estimators of the intercept and slope ($\hat\beta_0$ and $\hat\beta_1$).  
+If we do this and use probability theory  (maximum likelihood), we will get the same estimates for the slope and interceptas above!  
 
-These allow us to create confidence intervals or conduct hypothesis tests.
-However, these assumptions aren’t needed to simply do prediction (but are useful to get error bounds on our prediction
+What we get from the normality assumption (if reasonable) is the knowledge of the distribution of our estimators ($\hat\beta_0$ and $\hat\beta_1$).  
 
-- Get SE for prediction
+What does knowing the distribution allow us to do?  We can create confidence intervals or conduct hypothesis tests.
+
+- Get standard error (SE) for prediction
 ```{r}
-predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000)), se.fit = TRUE)
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)), se.fit = TRUE)
 ```
 
 - Get confidence interval for mean response
 ```{r}
-predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000)),
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)),
         se.fit = TRUE, interval = "confidence")
 ```
 
 - Get prediction interval for new response
 ```{r}
-predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000)),
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)),
         se.fit = TRUE, interval = "prediction")
 ```
 
@@ -363,8 +379,7 @@ predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000)),
 
 ```{r, warning = FALSE, out.width = "350px", fig.align='center', message = FALSE}
 library(ciTools)
-bikeData <- bikeData %>% 
-  add_pi(fit, names = c("lower", "upper"))
+bikeData <- add_pi(bikeData, fit, names = c("lower", "upper"))
 
 ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
   geom_point() + 
@@ -374,7 +389,7 @@ ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
 ```
 
 \color{red}
-If there is time, I'd have them jump into R and run the code to read in the minesweeper data.  Then they could use `lm()` to fit a model and predict.  
+For HW have them jump into R and run the code to read in the minesweeper data.  Then they could use `lm()` to fit a model and predict.  
 \color{black}
 
 ## Multiple Linear Regression
@@ -400,10 +415,6 @@ predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000),
 ```
 
 Difficult to visualize the model fit though!
-
-\color{red}
-Not sure if we'll have time for this or if these would go in day 4.  Will depend a bit on the inclusion/exclusion of the confidence/prediction bands.
-\color{black}
 
 ## Evaluating Model Accuracy
 
@@ -458,15 +469,92 @@ MLR fit does much better at predicting!
 
 \newpage
 
-# Another Modeling Approach
+# Another Modeling Approach (k Nearest Neighbors)
 
 \color{red}
 Day 4:
 
-I was going to either talk about $kNN$ or a basic regression tree here.  Only issue is that neither really uses stuff from your class explicitly.  Thoughts?  I'd like to do some fun-ish thing to introduce it.  Talk a little about the math.  Fit it in R and then predict with it.  
-\color{black}
+$kNN$ relate to idea with minesweeper data about how they predicted for their individual piece.  
 
-# Kaggle Competition
+Will need to use k = 10, 30, 50, ... 
+
+\color{black}
+## Intro and Recap  
+
+\textbf{Recap:} Our previous goal was to predict a value of $Y$ while including an explanatory variable $x$.  With that $x$, we said $E(Y|x)$ will minimize 
+$$E\left[(Y-c)^2|x\right]$$
+We called this true unknown value $E(Y|x) = f(x)$.  
+
+Given observed $Y$'s and $x$'s, we can estimate this function as $\hat{f}(x)$ (with SLR we estimated it with $\hat\beta_0+\hat\beta_1 x$).  This $\hat{f}(x)$ will minimize 
+
+$$g(y_1,...,y_n|x_1,...,x_n) = \frac{1}{n}\sum_{i=1}^{n}L(y_i, \hat{f}(x_i)) = \frac{1}{n}\sum_{i=1}^{n} (y_i-\hat{f}(x_i))^2$$
+
+What other things could we consider for $f(x)$???  
+
+Recall the minesweeper data we collected.  In your homework, you were asked to determine a prediction of the number of blocks you could click before hitting a bomb for **your** given number of bombs.  You were each creating your estimate of $f(x)$ for your $x$ value!  
+
+Let's visualize that idea and compare it to the SLR fit!
+
+\color{red}
+I'd need the data here but this is what it would look like.  I won't show the code here.
+\color{black}
+```{r, echo = TRUE}
+# means <- cars %>% 
+#   group_by(speed) %>% 
+#   summarize(mean = mean(dist))
+# means
+# 
+# #add first and last values to get break points for plotting
+# library(zoo)
+# speedBars <- c(min(cars$speed)-0.5, rollmean(unique(cars$speed), 2), max(cars$speed)+0.5)
+# plot(x = cars$speed, y= cars$dist, main = "Using Local Mean as an Estimate", xlab = "Speed", ylab = "Distance")
+# segments(x0 = speedBars[-length(speedBars)], x1 = speedBars[-1], y0 = means$mean, y1 = means$mean, lwd = 2)
+# 
+# #add linear fit for comparison 
+# fit <- lm(dist ~ speed, data = cars)
+# plot(x = cars$speed, y= cars$dist, main = "Using Local Mean as an Estimate", xlab = "Speed", ylab = "Distance")
+# segments(x0 = speedBars[-length(speedBars)], x1 = speedBars[-1], y0 = means$mean, y1 = means$mean, lwd = 2)
+# abline(fit, lwd = 2)
+
+#get means
+means <- minesweeper %>%
+  group_by(bombs) %>%
+  summarize(mean = mean(clicks))
+means
+
+#Local min vis
+plot(x = minesweeper$bombs, y= minesweeper$clicks, main = "Using Local Mean", xlab = "Bombs", ylab = "Clicks")
+segments(x0 = unique(bombs)-0.5, x1 = unique(bombs)+0.5, y0 = means$mean, y1 = means$mean, lwd = 2)
+
+#Compare to SLR
+fit <- lm(clicks ~ bombs, data = minesweeper)
+plot(x = minesweeper$bombs, y= minesweeper$clicks, main = "Using Local Mean vs SLR", xlab = "Bombs", ylab = "Clicks")
+abline(fit, lwd = 2)
+segments(x0 = unique(bombs)-0.5, x1 = unique(bombs)+0.5, y0 = means$mean, y1 = means$mean, lwd = 2)
+
+
+```
+
+This is the idea of $k$ Nearest Neighbors (kNN) for predicting a numeric response!  
+
+## kNN
+
+To predict a value of our (numeric) response kNN uses the **average of the $k$ 'closest' responses**.  For numeric data, we usually use Euclidean distance ($d(x_1, x_2) = \sqrt{(x_1-x_2)^2}$) to determine the closest values.  
+
+- Large $k$ implies more rigid (possibly *underfit* but lower variance prediction).  
+- Smaller $k$ implies less rigid (possible *overfit* with high variance in prediction)
+
+For the minesweeper data, we had many values at the same $x$ (\# of bombs).  That's why we considered using only 10, 30, 50, ...  Otherwise, we have ties and then things get tricky!  
+
+Practical use of kNN says we should standardize (center to have mean 0 and scale to have standard deviation 1) our numeric explanatory variables.  Why?
+
+
+## Choosing the Value of $k$
+
+Can do training and test or CV to determine $k$  
+
+
+# Competition!
 
 \color{red}
 Last day would be discussion the Kaggle competition here:
