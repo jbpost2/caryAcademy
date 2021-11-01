@@ -1,9 +1,6 @@
 ---
 title: "Prediction!"
-output: 
-  pdf_document:
-    toc: yes
-    toc_depth: 1
+output: pdf_document
 urlcolor: blue
 editor_options: 
   chunk_output_type: console
@@ -13,20 +10,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 ```
 
-
-\color{red}
-Ok, so I think I start off a bit loose to get people comfortable and bring out some playing cards. 
-
-- I'll point to someone and ask them to guess the suit of the next card I show.
-- Reshuffle and repeat giving them five cards/guesses.
-- Then I'll repeat with another three-four students. 
-- \# correctly guessed will be noted somewhere
-- They've done a similar thing before but now an emphasis on guessing the next \# of correct.
-
-What's the point?  How can I best predict the number of card suits the next person will get right?
-\color{black}
-
-# Prediction
+# Day 1: Prediction
 
 \textbf{Goal:} Predict a new value of a variable  
 
@@ -34,15 +18,7 @@ What's the point?  How can I best predict the number of card suits the next pers
 
 [App](https://shiny.stat.ncsu.edu/jbpost2/CardSim/)
 
-\color{red}  
-
-- Chat with them.
-- Lead them to talk about a sample.
-- Simulate values of $Y$ using an app (in the repo, use `shiny::runGitHub("caryAcademy", username = "jbpost2", subdir = "CardSim", ref = "main")`. [app](https://shiny.stat.ncsu.edu/jbpost2/CardSim/)
-- Lead them to ideas of using something like the sample mean or median as the predicted value.
-- Why something like the sample mean or sample median?  What are we really trying to do?  Find a value that is 'close' to the most values, i.e. something in the center being the most logical thing to do.
-
-\color{black}
+\vspace{1.5in}
 
 ```{r, echo = FALSE, out.width="350px", fig.align='center'}
 knitr::include_graphics("correctHist.png")
@@ -55,17 +31,8 @@ Let's assume we have a sample of $n$ people that each guessed five cards.  Call 
 
 \textbf{Need:} A way to quantify how well our prediction is doing...  Suppose there is some best prediction, call it $c$.  How do we measure the quality of $c$?
 
-\color{red}
-- Using the idea that we want something 'close' to all points, we find a way to compare each point to our prediction.
-- Think about things like:
-$$y_1 - c, (y_1-c)^2, |y_1-c|$$
-$$\sum_{i=1}^{n} (y_i-c), \sum_{i=1}^{n} (y_i-c)^2, \sum_{i=1}^{n} |y_i-c|$$
-$$\frac{1}{n}\sum_{i=1}^{n} (y_i-c), \frac{1}{n}\sum_{i=1}^{n} (y_i-c)^2, \frac{1}{n}\sum_{i=1}^{n} |y_i-c|$$
-- Quick app to look at how the measures work in the app. [app](https://shiny.stat.ncsu.edu/jbpost2/CardSim/)
-- In the end an objective function (mean squared error here) must be created to minimize that uses a 'Loss function', and we'll talk about why we'll use the common squared error loss:
-$$g(y_1,...,y_n) = \frac{1}{n}\sum_{i=1}^{n} L(y_i, c) = \frac{1}{n}\sum_{i=1}^{n}(y_i-c)^2$$
+\newpage
 
-\color{black}
 Can we choose an 'optimal' value for $c$ to minimize this function?  Calculus to the rescue!  
 
 Steps to minimize a function with respect to c:
@@ -75,65 +42,22 @@ Steps to minimize a function with respect to c:
 3. Solve for c to obtain the potential maximum or minimum
 4. Check to see if you have a maximum or minimum (or neither)
 
-\color{red}
-Answer comes out to be $\bar{y}$ as the minimizer.  
-
-\textbf{Big wrap:} This means that the sample mean is the best prediction when using squared error loss (root mean square error).
-\color{black} 
+\newpage
 
 ## Using a Population Distribution  
 
 Rather than using sample data, suppose we think about the theoretical distribution for $Y$ = \# of card suits guessed correctly from the five.  What might we use here?  What assumptions do we need to make this distribution reasonable?
 
-\color{red}
-- $Y\sim Bin(5, 0.25)$ assuming we have independent and identical trials
-- This gives 
-$$p_Y(y) = P(Y=y) = \binom{n}{y}p^y(1-p)^{n-y} = \binom{5}{y}0.25^y0.75^{5-y}$$
-for $y = 0, 1, 2, ..., n$ or $y = 0, 1, 2, 3, 4, 5$
-
-\color{black}
+\vspace{2in}
 
 Is there an optimal value $c$ for the **expected value** of the loss function?
 
 That is, can we minimize (as a function of $c$) $E\left[(Y-c)^2\right]$?
 
-\color{red}
-- I think I'll start them out on this one as theory leads to more difficult ideas and I'm not sure if you did general expected values.
-- In the end though we end up with $np$ or 1.25.
-- I'll show/discuss that this works generally for any distribution $p_Y(y)$ that has a mean
-- Discuss the relationship with this and a sample (1/n weight for each point vs $p_Y(y)$ weight for each.)
-- \textbf{Big idea:} This implies that $\mu$ is the best predictor to use if you are considering minimizing the expected squared error loss.
-
-HW for after day 1:
-
-- Give them a data set and have them find the mean in R and note that the prediction they would use is that.
-- Have them play minesweeper and record the data appropriately.  Ask them to produce a best guess for their \# of overall bombs.  
-- Give them a partial derivative question to practice on.
-
-\color{black}
 
 \newpage
 
-\color{red}
-This would be the 2nd (short day) material.  
-
-- Recap the big idea of prediction:  
-    + Need to quantify how well we are doing (squared error loss and MSE) 
-    + Sample mean is optimal if we have a sample
-    + Given a theoretical distribution, expected squared error loss is optimized at the mean of the distribution  
-    
-- Introduce next material with minesweeper, because it is now browser based, nostalgia on my part, and it seems somewhat fun <https://minesweeper.online/game/938135731>
-    + Each student will be assigned a certain number of mines for the board (15x40).
-    + They'll click on the first square just below the smiley face.  They'll continue to click down one block at a time until they hit a bomb.
-    + They'll record in a shared spreadsheet their number of blocks down the first bomb appears.
-    + Each person should play 10 games and put their data in.
-
-- Now we'll discuss how we could predict the number of blocks until the first bomb as a function of the number of bombs.
-- We'll read in the data to R and do some plotting (I'm not sure what the relationship will be exactly but I'd guess not super linear).  
-
-\color{black}
-
-# Relating Explanatory Variables in Prediction  
+# Day 2: Relating Explanatory Variables in Prediction  
 
 $Y$ is a random variable and we'll consider the x values fixed (we'll denote this as $Y|x$).  We hope to learn about the relationship between $Y$ and $x$.  
 
@@ -149,7 +73,7 @@ knitr::include_graphics("correctHistPlus.png")
 
 Harder (and more interesting) problem is to consider predicting a (response) variable $Y$ as a function of an explanatory variable $x$.
 
-```{r, echo = FALSE, out.width = "350px", fig.align='center'}
+```{r, echo = FALSE, out.width = "270px", fig.align='center'}
 set.seed(1)
 x <- seq(from = -11, to = 17, by = 0.1)
 y <- 300 - x^2 -20*x + 1/10*x^3
@@ -164,34 +88,28 @@ lines(rep(x, 15), yerr, type = "p", cex = 0.4)
 Now that we have an $x$, $E(Y|x)$ will minimize 
 $$E\left[(Y-c)^2|x\right]$$
 
-\color{red}
-
-We can call this true unknown value $E(Y|x) = f(x)$.  That is, the average value of $Y$ will now be considered as a function of $x$.
-
-Given observed $Y$'s and $x$'s, we can estimate this function as $\hat{f}(x)$ (think $\bar{y}$ from before).  This $\hat{f}(x)$ will minimize 
-
-$$g(y_1,...,y_n|x_1,...,x_n) = \frac{1}{n}\sum_{i=1}^{n}L(y_i, \hat{f}(x_i)) = \frac{1}{n}\sum_{i=1}^{n} (y_i-\hat{f}(x_i))^2$$
-
-\color{black}
+\newpage
 
 ## Approximating $f(x)$
 
 Although the true relationship is most certainly nonlinear, we may be ok approximating the relationship linearly.  For example, consider the same plot as above but between 0 and 5 only:
 
-```{r  echo = FALSE, out.width = "300px", fig.align='center'}
+```{r  echo = FALSE, out.width = "350px", fig.align='center'}
 plot(x, y, type = "l", lwd = 5, col = "blue", ylim = c(-250, 600), main = "Blue line, f(x), is the 'true' relationship between x and y", xlim = c(0, 5))
 lines(rep(x, 15), yerr, type = "p", cex = 0.4)
 ```
 
 That's pretty linear.  Consider plot between 5 and 15:
 
-```{r, echo = FALSE, out.width = "300px", fig.align='center'}
+```{r, echo = FALSE, out.width = "350px", fig.align='center'}
 plot(x, y, type = "l", lwd = 5, col = "blue", ylim = c(-250, 600), main = "Blue line, f(x), is the 'true' relationship between x and y \n Dashed line is the linear approximation", xlim = c(5, 15))
 lines(rep(x, 15), yerr, type = "p", cex = 0.4)
 lines(x, y = -10*x+200, lwd = 4, col = "black", lty = 2)
 ```
 
 Line still does a reasonable job and is often used as a basic approximation.  
+
+\newpage
 
 ## Linear Regression Model 
 
@@ -201,10 +119,8 @@ $$g(y_1,...,y_n|x_1,...,x_n) = \sum_{i=1}^{n} (y_i-\hat{\beta}_0-\hat{\beta}_1x_
 
  This equation is often called the 'sum of squared errors (or residuals)' or the 'residual sum of squares'.  The model for the data, $E(Y|x) = f(x) = \beta_0+\beta_1 x$ is called the Simple Linear Regression (SLR) model. 
 
-\color{red}
-I'll have code at the ready to update and rerender this plot using their data from minesweeper.
 \color{black}
-```{r echo = FALSE, out.width = "350px", fig.align='center'}
+```{r echo = FALSE, out.width = "270px", fig.align='center'}
 set.seed(1)
 #create data for minesweeper for first pass
 bombs <- rep(30:55, each = 10)
@@ -218,23 +134,10 @@ segments(minesweeper$bombs, minesweeper$clicks, y1 = predict(fit))
 
 Calculus allows us to find the 'least squares' estimators, $\hat\beta_0$ and $\hat\beta_1$ in a nice closed-form!
 
-\color{red}
-Do they know partial derivatives?  I'm not sure.  I think we'll be running low on time here anyway, so maybe I'll just talk about the idea of how to get them, set up the equations and then just give the answers.
-$$\hat{\beta}_1 = \frac{\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}$$
-$$\hat{\beta}_0 = \bar{y}-\bar{x}\hat{\beta}_1$$
-
-Then we'll jump into R and find the values for the minesweeper data and use it to predict by "hand" (plugging it in manually in R).  
-
-\color{black}
-
 
 \newpage
 
-\color{red}
-Ok, day 3 here.  Get into R and do some model fitting and predicting.  Start with a quick recap here
-\color{black}
-
-# Fitting a Linear Regression Model in R
+# Day 3: Fitting a Linear Regression Model in R
 
 \textbf{Recap:} Our goal is to predict a value of $Y$ while including an explanatory variable $x$.  We are assuming we have a sample of $(x_i, y_i)$ pairs, $i = 1,...,n$.  
 
@@ -272,11 +175,6 @@ From the information page: This data can be used for a lot of purposes such as p
 The data are available to download from this URL:  
 <https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.csv>
 
-
-\color{red}
-I think the exploration and modeling would be better to do live and ask them for input as we go through it.  I'll put some stuff here and then we can talk about it.
-\color{black}
-
 ## Read in Data and Explore!  
 
 ```{r warning = FALSE, message = FALSE}
@@ -285,27 +183,9 @@ bikeData <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.cs
 bikeData <- bikeData %>% tidyr::drop_na()
 select(bikeData, selling_price, year, km_driven, ex_showroom_price, name, everything())
 ```
-Our 'response' variable here is the `selling_price` and we could use the variable `year`, `km_driven`, or `ex_showroom_price` as the explanatory variable.  Let's make some plots and summaries to explore.
+Our 'response' variable here is the `selling_price` and we could use the variable `year`, `km_driven`, or `ex_showroom_price` as the explanatory variable.  Let's make some plots and summaries to explore.  To R!
 
-```{r, out.width = "350px", fig.align='center', warning = FALSE, message = FALSE}
-summary(bikeData)
-summarize(group_by(bikeData, owner),
-         mean = mean(selling_price),
-         median = median(selling_price),
-         sd = sd(selling_price),
-         IQR = IQR(selling_price))
-
-library(GGally)
-ggpairs(select(bikeData, -name))
-
-g <- ggplot(data = bikeData, aes(y = selling_price))
-g + geom_jitter(aes(x = year, color = km_driven))
-g + geom_point(aes(x = ex_showroom_price), size = 0.75)
-g <- ggplot(data = filter(bikeData, ex_showroom_price < 100000), aes(y = selling_price))
-g + 
-  geom_point(aes(x = ex_showroom_price, color = year, size = km_driven)) +
-  scale_color_gradientn(colours = rainbow(5))
-```
+\newpage
 
 ## 'Fitting' the Model  
 
@@ -353,6 +233,7 @@ Can predict the `selling_price` for a given `ex_showroom_price` easily using the
 predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)))
 ```
 
+\newpage
 
 ## Error Assumptions
 
@@ -366,9 +247,7 @@ What we get from the normality assumption (if reasonable) is the knowledge of th
 
 What does knowing the distribution allow us to do?  We can create confidence intervals or conduct hypothesis tests.
 
-\color{red}
-Discuss basic ideas/point of each method.
-\color{black}
+\vspace{2in}
 
 - Get standard error (SE) for prediction
 ```{r}
@@ -384,7 +263,7 @@ predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)),
 - Get prediction interval for new response
 ```{r}
 predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)),
-        se.fit = TRUE, interval = "prediction")
+        interval = "prediction")
 ```
 
 - Can see the confidence and prediction bands on the plot:
@@ -400,17 +279,13 @@ ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
 	ggtitle("Scatter Plot with 95% PI & 95% CI")
 ```
 
-\color{red}
-For HW have them jump into R and run the code to read in the minesweeper data.  Then they could use `lm()` to fit a model and predict.  
-\color{black}
+\newpage
 
 ## Multiple Linear Regression
 
 We can add in more than one explanatory variable using the `formula` for `lm()`.  The ideas all follow through!
 
-\color{red}
-Just show new SSE type equation.
-\color{black}
+\vspace{1.25in}
 
 ```{r}
 fit <- lm(selling_price ~ ex_showroom_price + year + km_driven, data = bikeData)
@@ -487,18 +362,8 @@ MLR fit does much better at predicting!
 
 \newpage
 
-# Another Modeling Approach (k Nearest Neighbors)
+# Day 4: Another Modeling Approach (k Nearest Neighbors)
 
-\color{red}
-Day 4:
-
-$kNN$ relate to idea with minesweeper data about how they predicted for their individual piece.  
-
-Will need to use k = 10, 30, 50, ... 
-
-\color{black}
-
-## Intro and Recap  
 
 \textbf{Recap:} Our previous goal was to predict a value of $Y$ while including an explanatory variable $x$.  With that $x$, we said $E(Y|x)$ will minimize 
 $$E\left[(Y-c)^2|x\right]$$
@@ -512,17 +377,11 @@ What other things could we consider for $f(x)$???
 
 Consider the minesweeper data we collected previously.
 
-\color{red}
-
-Recall the minesweeper data we collected.  In your homework, you were asked to determine a prediction of the number of blocks you could click before hitting a bomb for **your** given number of bombs.  You were each creating your estimate of $f(x)$ for your $x$ value!  
-\color{black}
+\newpage
 
 Let's visualize that idea and compare it to the SLR fit!
 
-\color{red}
-I'd need the data here but this is what it would look like.  I won't show the code here.
-\color{black}
-```{r, echo = FALSE, out.width = "350px", fig.align = 'center'}
+```{r, echo = FALSE, out.width = "280px", fig.align = 'center'}
 # means <- cars %>% 
 #   group_by(speed) %>% 
 #   summarize(mean = mean(dist))
@@ -582,11 +441,6 @@ Previously, we fit the SLR model using the `ex_showroom_price` to predict our `s
 
 ```{r}
 fitSLR <- lm(selling_price ~ ex_showroom_price, data = train)
-fitSLR
-summary(fitSLR)
-ggplot(train, aes(x = ex_showroom_price, y = selling_price)) +
-  geom_point() +
-  geom_smooth(method = "lm")
 ```
 
 Obtain the prediction on the test set.
@@ -599,7 +453,7 @@ Let's now fit the kNN model using a few values of $k$.
 
 $k = 1$:
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 library("caret")
 k <- 1
 kNNFit1 <- train(selling_price ~ ex_showroom_price, 
@@ -611,7 +465,7 @@ kNNFit1
 predkNN1 <- predict(kNNFit1, newdata = test)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
 grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
 kNNPred <- predict(kNNFit1, grid)
 
@@ -645,7 +499,7 @@ predkNN10 <- predict(kNNFit10, newdata = test)
 
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
 grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
 kNNPred <- predict(kNNFit10, grid)
 
@@ -672,7 +526,7 @@ kNNFit20
 predkNN20 <- predict(kNNFit20, newdata = test)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
 grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
 kNNPred <- predict(kNNFit20, grid)
 
@@ -698,7 +552,7 @@ kNNFit50
 predkNN50 <- predict(kNNFit50, newdata = test)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
 grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
 kNNPred <- predict(kNNFit50, grid)
 
@@ -724,7 +578,7 @@ kNNFit100
 predkNN100 <- predict(kNNFit100, newdata = test)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
 grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
 kNNPred <- predict(kNNFit100, grid)
 
@@ -737,7 +591,7 @@ plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN prediction
 ```
 
 
-Compare test set RMSE!
+### Compare test set RMSE!
 
 ```{r}
 RMSE <- function(pred, test){sqrt(mean((pred-test)^2))}
@@ -754,14 +608,7 @@ data.frame(method = c("SLR", "kNN1", "kNN10", "kNN20", "kNN50", "kNN100"),
 
 Ok, of course we don't want to do this manually in real life...  What we actually do:
 
-\color{red}
-1. Split the data into training and test sets
-2. Choose a 'best' model for a given method (MLR, kNN, etc.) using the training set
-    - This requires us to have a method to choose using only the training data!
-3. Compare the best model from each method on the test set to see how they do
-4. Refit the chosen model on the full data set.  This model would then be what you would use for future predictions.
-
-\color{black}
+\newpage
 
 R makes it easy!  To choose a kNN model we can run code like this:
 
@@ -842,12 +689,10 @@ postResample(predMLR, test$selling_price)
 
 Note: Practical use of kNN says we should usually standardize (center to have mean 0 and scale to have standard deviation 1) our numeric explanatory variables.  Why?
 
-\color{red}
-Day 5
-\color{black} 
 
+\newpage
 
-# Competition!
+# Day 5: Competition!
 
 Time to put what we've learned into practice!  [Kaggle](https://www.kaggle.com) is a site that hosts competitions around predicting a response (either a numeric response or predicting the category that an observation might belong to).  
 

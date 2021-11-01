@@ -1,8 +1,5 @@
 library("FNN")
-library("ElemStatLearn")
-library("plotrix")
 library("shiny")
-library(zoo)
 
 #read in data here, randomly generate for now
 set.seed(1)
