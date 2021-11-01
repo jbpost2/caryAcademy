@@ -479,6 +479,7 @@ $kNN$ relate to idea with minesweeper data about how they predicted for their in
 Will need to use k = 10, 30, 50, ... 
 
 \color{black}
+
 ## Intro and Recap  
 
 \textbf{Recap:} Our previous goal was to predict a value of $Y$ while including an explanatory variable $x$.  With that $x$, we said $E(Y|x)$ will minimize 
@@ -498,7 +499,7 @@ Let's visualize that idea and compare it to the SLR fit!
 \color{red}
 I'd need the data here but this is what it would look like.  I won't show the code here.
 \color{black}
-```{r, echo = TRUE}
+```{r, echo = FALSE, out.width = "350px", fig.align = 'center'}
 # means <- cars %>% 
 #   group_by(speed) %>% 
 #   summarize(mean = mean(dist))
@@ -542,24 +543,290 @@ This is the idea of $k$ Nearest Neighbors (kNN) for predicting a numeric respons
 To predict a value of our (numeric) response kNN uses the **average of the $k$ 'closest' responses**.  For numeric data, we usually use Euclidean distance ($d(x_1, x_2) = \sqrt{(x_1-x_2)^2}$) to determine the closest values.  
 
 - Large $k$ implies more rigid (possibly *underfit* but lower variance prediction).  
-- Smaller $k$ implies less rigid (possible *overfit* with high variance in prediction)
+- Smaller $k$ implies less rigid (possible *overfit* with high variance in prediction)  
+
+Let's check out this app. **Link app here**
 
 For the minesweeper data, we had many values at the same $x$ (\# of bombs).  That's why we considered using only 10, 30, 50, ...  Otherwise, we have ties and then things get tricky!  
 
-Practical use of kNN says we should standardize (center to have mean 0 and scale to have standard deviation 1) our numeric explanatory variables.  Why?
-
-
 ## Choosing the Value of $k$
 
-Can do training and test or CV to determine $k$  
+How do we choose which $k$ value to use?  We can do a similar training vs test set idea.  Fit the models (one model for each $k$) and predict on the test set.  The model with the lowest Root Mean Squared Error (RMSE) on the test set can be chosen!  
+
+## kNN Models for `selling_price` from the Bike Dataset  
+
+Previously, we fit the SLR model using the `ex_showroom_price` to predict our `selling_price` of motorcycles.  We'll refit this using the training data here.
+
+```{r}
+fitSLR <- lm(selling_price ~ ex_showroom_price, data = train)
+fitSLR
+summary(fitSLR)
+ggplot(train, aes(x = ex_showroom_price, y = selling_price)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+Obtain the prediction on the test set.
+```{r}
+predSLR <- predict(fitSLR, newdata = test)
+```
+
+
+Let's now fit the kNN model using a few values of $k$.
+
+$k = 1$:
+
+```{r}
+library("caret")
+k <- 1
+kNNFit1 <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit1
+predkNN1 <- predict(kNNFit1, newdata = test)
+```
+
+```{r, echo = FALSE}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit1, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price")
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+$k = 10$:
+
+```{r}
+k <- 10
+kNNFit10 <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit10
+predkNN10 <- predict(kNNFit10, newdata = test)
+
+```
+
+```{r, echo = FALSE}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit10, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+
+$k = 20$:
+
+```{r}
+k <- 20
+kNNFit20 <-train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit20
+predkNN20 <- predict(kNNFit20, newdata = test)
+```
+
+```{r, echo = FALSE}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit20, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+$k = 50$:
+
+```{r}
+k <- 50
+kNNFit50 <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit50
+predkNN50 <- predict(kNNFit50, newdata = test)
+```
+
+```{r, echo = FALSE}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit50, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+$k = 100$:
+
+```{r}
+k <- 100
+kNNFit100 <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit100
+predkNN100 <- predict(kNNFit100, newdata = test)
+```
+
+```{r, echo = FALSE}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit100, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+Compare test set RMSE!
+
+```{r}
+RMSE <- function(pred, test){sqrt(mean((pred-test)^2))}
+SLR <- RMSE(predSLR, test$selling_price)
+kNN1 <- RMSE(predkNN1, test$selling_price)
+kNN10 <- RMSE(predkNN10, test$selling_price)
+kNN20 <- RMSE(predkNN20, test$selling_price)
+kNN50 <- RMSE(predkNN50, test$selling_price)
+kNN100 <- RMSE(predkNN100, test$selling_price)
+
+data.frame(method = c("SLR", "kNN1", "kNN10", "kNN20", "kNN50", "kNN100"),
+           RMSE = c(SLR, kNN1, kNN10, kNN20, kNN50, kNN100))
+```
+
+Ok, of course we don't want to do this manually in real life...  What we actually do:
+
+1. Split the data into training and test sets
+2. Choose a 'best' model for a given method (MLR, kNN, etc.) using the training set
+    - This requires us to have a method to choose using only the training data!
+3. Compare the best model from each method on the test set to see how they do
+4. Refit the chosen model on the full data set.  This model would then be what you would use for future predictions.
+
+R makes it easy!  To choose a kNN model we can run code like this:
+
+```{r}
+k <- 1:100
+kNNFit <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k), 
+      trControl = trainControl(method = "cv", number = 10)
+      )
+kNNFit
+```
+
+The chosen model can then be used to predict just as before.
+
+```{r}
+predkNN <- predict(kNNFit, newdata = test)
+postResample(predkNN, test$selling_price)
+```
+
+The same process can be used to fit and predict for an SLR or MLR model.
+
+```{r}
+SLRFit <- train(selling_price ~ ex_showroom_price,
+                data = train,
+                method = "lm",
+                trControl = trainControl(method = "cv", number = 10)
+                )
+SLRFit
+predSLR <- predict(SLRFit, newdata = test)
+postResample(predSLR, test$selling_price)
+
+```
+
+## Multiple Predictors
+
+Just like SLR can include multiple explanatory variables, we can include multiple explanatory variables with kNN (they must all be numeric unless you develop or use a 'distance' measure that is appropriate for categorical data).  
+
+With all numeric explanatory variables, we often use Euclidean distance as our distance metric.  For instance, with two explanatory variables $x_1$ and $x_2$:
+$$d(x_1, x_2) = \sqrt{(x_{11}-x_{12})^2+(x_{21}-x_{22})^2}$$
+
+The same model notation from before can be used:
+$$respons~variable \sim explanatory~variable1 + explanatory~variable2 +...$$
+
+Along with the same kind of R code to fit the model:
+
+```{r}
+k <- 1:100
+kNNFit <- train(selling_price ~ ex_showroom_price + km_driven + year, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k), 
+      trControl = trainControl(method = "cv", number = 10)
+      )
+kNNFit
+```
+
+The chosen model can then be used to predict just as before.
+
+```{r}
+predkNN <- predict(kNNFit, newdata = test)
+postResample(predkNN, test$selling_price)
+```
+
+Just for reference: let's compare this to the MLR output.
+
+```{r}
+MLRFit <- train(selling_price ~ ex_showroom_price + km_driven + year, 
+      data = train, 
+      method = "lm", 
+      trControl = trainControl(method = "cv", number = 10)
+      )
+MLRFit
+predMLR <- predict(MLRFit, newdata = test)
+postResample(predMLR, test$selling_price)
+```
+
+Note: Practical use of kNN says we should usually standardize (center to have mean 0 and scale to have standard deviation 1) our numeric explanatory variables.  Why?
+
+\color{red}
+Day 5
+\color{black} 
 
 
 # Competition!
 
-\color{red}
-Last day would be discussion the Kaggle competition here:
-<https://www.kaggle.com/c/house-prices-advanced-regression-techniques/overview>
+Time to put what we've learned into practice!  [Kaggle](https://www.kaggle.com) is a site that hosts competitions around predicting a response (either a numeric response or predicting the category that an observation might belong to).  
 
-Perhaps split them into teams of two or three.  Have them fit some models and submit to see how they do.  
+## Housing Prices
 
-I'd have some basic code they could use to read the data in, split it into training and test so they can select their model, create predictions, and output them to a csv for submission (evaluation is log prediction minus log of the actual value).
+Let's go check out our competition: <https://www.kaggle.com/c/house-prices-advanced-regression-techniques/overview>
+
+Use the starter files to come up with some models!

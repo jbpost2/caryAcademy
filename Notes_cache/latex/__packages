@@ -10,3 +10,5 @@ stringr
 forcats
 GGally
 ciTools
+lattice
+caret

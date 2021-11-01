@@ -16,7 +16,7 @@ ui <- fluidPage(
   headerPanel('k-Nearest Neighbours Classification'),
   sidebarLayout(
     sidebarPanel(
-      sliderInput('k', 'Select the Number of Nearest Neighbours (end groups will use 10 less)', value = 10, min = 10, max = nrow(minesweeper), step = 20)
+      sliderInput('k', 'Select the Number of Nearest Neighbours', value = 10, min = 10, max = nrow(minesweeper), step = 20)
       ),
     mainPanel(
       plotOutput('plot1', width = "600px", height = "600px")
