@@ -8,6 +8,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+library(tidyverse)
 ```
 
 # Day 1: Prediction
@@ -120,11 +121,15 @@ $$g(y_1,...,y_n|x_1,...,x_n) = \sum_{i=1}^{n} (y_i-\hat{\beta}_0-\hat{\beta}_1x_
  This equation is often called the 'sum of squared errors (or residuals)' or the 'residual sum of squares'.  The model for the data, $E(Y|x) = f(x) = \beta_0+\beta_1 x$ is called the Simple Linear Regression (SLR) model. 
 
 \color{black}
-```{r echo = FALSE, out.width = "270px", fig.align='center'}
-set.seed(1)
+```{r echo = FALSE, out.width = "270px", fig.align='center', warning = FALSE, message = FALSE}
+#set.seed(1)
 #create data for minesweeper for first pass
-bombs <- rep(30:55, each = 10)
-minesweeper <- data.frame(bombs = bombs, clicks = 25 - bombs/3 + round(rnorm(length(bombs), mean = 0, sd = 2)))
+#bombs <- rep(30:55, each = 10)
+#minesweeper <- data.frame(bombs = bombs, clicks = 25 - bombs/3 + round(rnorm(length(bombs), mean = 0, sd = 2)))
+
+minesweeper <- read_csv("minesweeper.csv")
+minesweeper$bombs <- minesweeper$Bombs
+minesweeper$clicks <- minesweeper$Clicks
 
 plot(x = minesweeper$bombs, y= minesweeper$clicks, main = "SLR: X = # of Bombs, Y = # of Clicks", xlab = "Bombs", ylab = "Clicks")
 fit <- lm(clicks ~ bombs, data = minesweeper)
@@ -407,13 +412,13 @@ means
 
 #Local min vis
 plot(x = minesweeper$bombs, y= minesweeper$clicks, main = "Using Local Mean", xlab = "Bombs", ylab = "Clicks")
-segments(x0 = unique(bombs)-0.5, x1 = unique(bombs)+0.5, y0 = means$mean, y1 = means$mean, lwd = 2)
+segments(x0 = unique(minesweeper$bombs)-0.5, x1 = unique(minesweeper$bombs)+0.5, y0 = means$mean, y1 = means$mean, lwd = 2)
 
 #Compare to SLR
 fit <- lm(clicks ~ bombs, data = minesweeper)
 plot(x = minesweeper$bombs, y= minesweeper$clicks, main = "Using Local Mean vs SLR", xlab = "Bombs", ylab = "Clicks")
 abline(fit, lwd = 2)
-segments(x0 = unique(bombs)-0.5, x1 = unique(bombs)+0.5, y0 = means$mean, y1 = means$mean, lwd = 2)
+segments(x0 = unique(minesweeper$bombs)-0.5, x1 = unique(minesweeper$bombs)+0.5, y0 = means$mean, y1 = means$mean, lwd = 2)
 
 
 ```
