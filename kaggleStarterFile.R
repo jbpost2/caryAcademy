@@ -31,3 +31,16 @@ write_csv(data.frame(Id = test$Id, SalePrice = preds), file = "submission.csv")
 # Give a brief description of your model
 # Hit Make Submission!
 # It will score and at the top you'll see a link to see your spot on the leaderboard!
+
+
+
+
+
+
+
+
+
+
+
+
+
