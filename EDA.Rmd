@@ -1,0 +1,82 @@
+---
+title: "EDA"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Read in the Bike Details Data
+
+```{r}
+library(tidyverse)
+bikeData <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.csv")
+bikeData %>% 
+  select(selling_price, year, km_driven, owner, seller_type, everything())
+```
+
+Let's convert some `chr` to `factors` and consider the `NA` or missing values.
+
+```{r}
+#convert seller_type to a factor
+bikeData <- bikeData %>% 
+  mutate(seller_type_factor = as.factor(seller_type))
+#find missing value numbers by column
+colSums(is.na(bikeData))
+#what to do with those missing values? problem dependent
+```
+
+## Graphs and Numeric Summaries
+
+Start with summarizing the categorical variables (i.e. `str` or `factor` variables)
+
+```{r}
+table(bikeData$seller_type_factor)
+```
+What does this mean???
+
+```{r}
+table(bikeData$owner, bikeData$year)
+```
+
+Same thing in graphical form: bar graph
+```{r}
+ggplot(bikeData, aes(x = owner)) +
+  geom_bar()
+```
+
+
+Now we'll summarize some of the numeric variables. `selling_price` is what we care about the most so focus on that!
+
+```{r}
+bikeData %>%
+  group_by(owner, seller_type_factor) %>%
+  summarize(mean = mean(selling_price),
+            median = median(selling_price),
+            sd = sd(selling_price),
+            min = min(selling_price),
+            max = max(selling_price))
+```
+
+Some graphs of `selling_price`. 
+
+```{r}
+ggplot(bikeData, aes(x = km_driven, y = selling_price))+
+  geom_point()
+```
+
+
+Do a log transform on both!
+```{r}
+bikeData <- bikeData %>%
+  mutate(log_selling_price = log(selling_price),
+         log_km_driven = log(km_driven))
+ggplot(bikeData, aes(x = log_km_driven, y = log_selling_price))+
+  geom_point()
+```
+
+
+
+
+
