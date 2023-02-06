@@ -263,8 +263,8 @@ water
 table(water$Potability)
 water %>% 
   group_by(Potability) %>% 
-  select(Hardness, Chloramines) %>% 
-  summary()
+  select(Hardness, Chloramines, Potability) %>% 
+  summarize(meanH = mean(Hardness), meanC = mean(Chloramines))
 ```
 
 Why is linear regression not appropriate?
