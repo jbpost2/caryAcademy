@@ -398,5 +398,222 @@ ggplot(water_summarized) +
   geom_line(data = plot_df, aes(x = Hardness, y = preds))
 ```
 
+\newpage
+
+# Multiple Linear Regression
+
+We saw that we could fit a simple linear regression model when we have a numeric response and numeric explanatory variable. For instance,
+
+```{r, message = FALSE, warning = FALSE}
+bikeData <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.csv")
+bikeData <- bikeData %>% mutate(log_selling_price = log(selling_price), 
+                                log_km_driven = log(km_driven))
+
+slr_fit1 <- lm(log_selling_price ~ log_km_driven, data = bikeData)
+summary(slr_fit1)
+```
+
+What if we had another explanatory variable of interest (say `year`). We could fit another SLR model.
+
+```{r}
+slr_fit2 <- lm(log_selling_price ~ year, data = bikeData)
+summary(slr_fit2)
+```
+
+Two $x$ variables each used to predict our response $y$:
+
+```{r, out.width = '300px'}
+ggplot(bikeData, aes(x = log_km_driven, y = log_selling_price)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+```{r, out.width = '300px'}
+ggplot(bikeData, aes(x = year, y = log_selling_price)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+How to include both in our model? Use a multiple linear regression model (MLR)!
+
+### Fitting the model in R
+
+Just add to the right-hand side of our equation!
+
+```{r}
+mlr_fit <- lm(log_selling_price ~ log_km_driven + year, data = bikeData)
+summary(mlr_fit)
+```
+
+Check assumptions as before:
+
+```{r, out.width = "320px"}
+par(mfrow = c(2,2))
+plot(mlr_fit)
+```
+
+\newpage 
+
+What is the model doing (visually)?
+
+```{r, echo = FALSE, out.width = "400px", message = FALSE}
+par(mfrow=c(1,1))
+library(scatterplot3d)
+s3d <- scatterplot3d(x = bikeData$log_km_driven, y = bikeData$year, z = bikeData$log_selling_price, main = "3D plot to visualize plane fit", xlab = "log km driven", ylab = "year", zlab = "log selling price")
+# Add regression plane
+s3d$plane3d(mlr_fit)
+```
+```{r, echo = FALSE, out.width = "400px", message = FALSE}
+s3d2 <- scatterplot3d(x = bikeData$log_km_driven, y = bikeData$year, z = bikeData$log_selling_price, main = "3D plot to visualize plane fit", xlab = "log km driven", ylab = "year", zlab = "log selling price", angle = 135)
+# Add regression plane
+s3d2$plane3d(mlr_fit)
+```
+
+\newpage
+
+### Including a Categorical Explanatory Variable
+
+Consider adding a variable corresponding to 1st owner or multiple owners:
+
+```{r}
+bikeData <- bikeData %>%
+  mutate(owner_indicator = as.factor(ifelse(owner == "1st owner", "One", "Multiple")))
+table(bikeData$owner_indicator)
+```
+
+Add this to one of the SLR models:
+
+```{r}
+mlr_with_cat <- lm(log_selling_price ~ log_km_driven + owner_indicator, data = bikeData)
+summary(mlr_with_cat)
+```
+
+What does `owner_indicatorOne` mean?
+
+\newpage
+
+What does this do to our model?
+
+```{r, echo = FALSE, out.width = "370px", fig.align = "center"}
+log_km_driven_seq <- seq(from = 5.5, to = 14, by = 0.1)
+one_preds <- predict(mlr_with_cat, 
+                     newdata = data.frame(log_km_driven = log_km_driven_seq, owner_indicator = as.factor("One")))
+mult_preds <-predict(mlr_with_cat, 
+                     newdata = data.frame(log_km_driven = log_km_driven_seq, owner_indicator = as.factor("Multiple")))
+pred_df <- data.frame(log_km_driven_seq, one_preds, mult_preds)
+ggplot(bikeData, aes(x = log_km_driven, y = log_selling_price, color = owner_indicator)) + 
+  geom_point() + 
+  geom_line(data = pred_df, aes(x = log_km_driven_seq, y = one_preds, linetype = "One Owner Line"), color = "Blue") +
+  geom_line(data = pred_df, aes(x = log_km_driven_seq, y = mult_preds, linetype = "Multiple Owner Line"), color = "Blue")
+```
+
+If we add an **interaction term** we get completely different lines:
+
+```{r}
+mlr_with_cat_interaction <- lm(log_selling_price ~ log_km_driven + owner_indicator +
+                                 log_km_driven:owner_indicator, data = bikeData)
+summary(mlr_with_cat_interaction)
+```
+
+```{r out.width = "400px", fig.align = "center"}
+ggplot(bikeData, aes(x = log_km_driven, y = log_selling_price, color = owner_indicator)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+\newpage
+
+Note: The same idea works for the earlier MLR model!
+
+```{r}
+mlr_fit2 <- lm(log_selling_price ~ log_km_driven + year + owner_indicator, data = bikeData)
+summary(mlr_fit2)
+```
+
+```{r, echo = FALSE, out.width = "400px", message = FALSE}
+s3d2 <- scatterplot3d(x = bikeData$log_km_driven, y = bikeData$year, z = bikeData$log_selling_price, main = "3D plot to visualize plane fit", xlab = "log km driven", ylab = "year", zlab = "log selling price", angle = 135)
+# Add regression plane
+one_intercept <- -151.55-0.10021
+mult_intercept <- -151.55
+mlr_fit2a <- lm(I(log_selling_price-one_intercept) ~ 0+ log_km_driven + year, data = bikeData)
+s3d2$plane3d(Intercept = one_intercept, x.coef = mlr_fit2a$coefficients[1], y.coef = mlr_fit2a$coefficients[2], col = "Red")
+s3d2$plane3d(Intercept = mult_intercept, x.coef = mlr_fit2a$coefficients[1], y.coef = mlr_fit2a$coefficients[2], col = "Blue")
+```
+
+\newpage
+
+
+## Logistic Regression
+
+Can include more explanatory variables in these models too. Same ideas apply (but the differences in fit are slightly more complicated).
+
+```{r}
+water
+water <- water %>% 
+  mutate(highChl = ifelse(Chloramines > 9, "high", "low"))
+
+log_reg_fit <- glm(Potability ~ Hardness + highChl, data = water, family = "binomial")
+summary(log_reg_fit)
+```
+
+\newpage
+
+`highChl` just changes the 'intercept'. Mostly just shifts the logistic curve over in the part we care about...
+
+```{r, echo = FALSE, out.width="400px", fig.align='center'}
+Hardness_seq <- seq(50, 350, by = 0.1)
+pred_high <- predict(log_reg_fit, newdata = data.frame(Hardness = Hardness_seq, highChl = "high"), type = "response")
+pred_low <- predict(log_reg_fit, newdata = data.frame(Hardness = Hardness_seq, highChl = "low"), type = "response")
+pred_df = data.frame(Hardness = Hardness_seq, pred_low = pred_low, pred_high = pred_high)
+
+ggplot(water, aes(x = Hardness, y = Potability, color = highChl)) + geom_point() +
+  geom_line(data = pred_df, aes(x = Hardness, y = pred_low, linetype = "low Chl"), color = "blue") + 
+  geom_line(data = pred_df, aes(x = Hardness, y = pred_high, linetype = "high Chl"), color = "blue")
+```
+
+```{r, echo = FALSE, out.width="400px", fig.align='center'}
+Hardness_seq <- seq(-5000, 4000, by = 0.1)
+pred_high <- predict(log_reg_fit, newdata = data.frame(Hardness = Hardness_seq, highChl = "high"), type = "response")
+pred_low <- predict(log_reg_fit, newdata = data.frame(Hardness = Hardness_seq, highChl = "low"), type = "response")
+pred_df = data.frame(Hardness = Hardness_seq, pred_low = pred_low, pred_high = pred_high)
+
+ggplot(water, aes(x = Hardness, y = Potability, color = highChl)) + geom_point() +
+  geom_line(data = pred_df, aes(x = Hardness, y = pred_low, linetype = "low Chl"), color = "blue") + 
+  geom_line(data = pred_df, aes(x = Hardness, y = pred_high, linetype = "high Chl"), color = "blue")
+```
+
+\newpage
+
+If we include an interaction between `Hardness` and `highChl` we get two separate logistic curves fit (one for the high group and one for the low group).
+
+```{r}
+log_reg_fit2 <- glm(Potability ~ Hardness + highChl + Hardness:highChl, 
+                    data = water, family = "binomial")
+summary(log_reg_fit2)
+```
+
+```{r, echo = FALSE, out.width="400px", fig.align='center'}
+Hardness_seq <- seq(50, 350, by = 0.1)
+pred_high <- predict(log_reg_fit2, newdata = data.frame(Hardness = Hardness_seq, highChl = "high"), type = "response")
+pred_low <- predict(log_reg_fit2, newdata = data.frame(Hardness = Hardness_seq, highChl = "low"), type = "response")
+pred_df = data.frame(Hardness = Hardness_seq, pred_low = pred_low, pred_high = pred_high)
+
+ggplot(water, aes(x = Hardness, y = Potability, color = highChl)) + geom_point() +
+  geom_line(data = pred_df, aes(x = Hardness, y = pred_low, linetype = "low Chl"), color = "blue") + 
+  geom_line(data = pred_df, aes(x = Hardness, y = pred_high, linetype = "high Chl"), color = "blue")
+```
+
+Just to see the curvature for the 'high Chl' group:
+
+```{r, echo = FALSE, out.width="400px", fig.align='center'}
+Hardness_seq <- seq(-150, 550, by = 0.1)
+pred_high <- predict(log_reg_fit2, newdata = data.frame(Hardness = Hardness_seq, highChl = "high"), type = "response")
+pred_low <- predict(log_reg_fit2, newdata = data.frame(Hardness = Hardness_seq, highChl = "low"), type = "response")
+pred_df = data.frame(Hardness = Hardness_seq, pred_low = pred_low, pred_high = pred_high)
+
+ggplot(water, aes(x = Hardness, y = Potability, color = highChl)) + geom_point() +
+  geom_line(data = pred_df, aes(x = Hardness, y = pred_low, linetype = "low Chl"), color = "blue") + 
+  geom_line(data = pred_df, aes(x = Hardness, y = pred_high, linetype = "high Chl"), color = "blue")
+```
+
 
 
