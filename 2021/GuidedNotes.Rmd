@@ -1,0 +1,708 @@
+---
+title: "Prediction!"
+output: pdf_document
+urlcolor: blue
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+library(tidyverse)
+```
+
+# Day 1: Prediction
+
+\textbf{Goal:} Predict a new value of a variable  
+
+- Ex: Another student will be guessing.  Define $Y$ = \# of card suits guessed correctly from the five.  What should we guess/predict for the next value of $Y$?  
+
+[App](https://shiny.stat.ncsu.edu/jbpost2/CardSim/)
+
+\vspace{1.5in}
+
+```{r, echo = FALSE, out.width="350px", fig.align='center'}
+knitr::include_graphics("correctHist.png")
+```
+
+
+## Loss function  
+
+Let's assume we have a sample of $n$ people that each guessed five cards.  Call these values $y_1$, $y_2$, ..., $y_n$.  
+
+\textbf{Need:} A way to quantify how well our prediction is doing...  Suppose there is some best prediction, call it $c$.  How do we measure the quality of $c$?
+
+\newpage
+
+Can we choose an 'optimal' value for $c$ to minimize this function?  Calculus to the rescue!  
+
+Steps to minimize a function with respect to c:
+
+1. Take the derivative with respect to c
+2. Set the derivative equal to 0
+3. Solve for c to obtain the potential maximum or minimum
+4. Check to see if you have a maximum or minimum (or neither)
+
+\newpage
+
+## Using a Population Distribution  
+
+Rather than using sample data, suppose we think about the theoretical distribution for $Y$ = \# of card suits guessed correctly from the five.  What might we use here?  What assumptions do we need to make this distribution reasonable?
+
+\vspace{2in}
+
+Is there an optimal value $c$ for the **expected value** of the loss function?
+
+That is, can we minimize (as a function of $c$) $E\left[(Y-c)^2\right]$?
+
+
+\newpage
+
+# Day 2: Relating Explanatory Variables in Prediction  
+
+$Y$ is a random variable and we'll consider the x values fixed (we'll denote this as $Y|x$).  We hope to learn about the relationship between $Y$ and $x$.  
+
+When we considered just $Y$ by itself and used squared error loss, we know that $E(Y) = \mu$ minimizes
+$$E\left[(Y-c)^2\right]$$
+as a function of $c$.  Given data, we used $\hat{\mu} = \bar{y}$ as our prediction.  
+
+
+```{r, echo = FALSE, out.width="350px", fig.align='center'}
+knitr::include_graphics("correctHistPlus.png")
+```
+
+
+Harder (and more interesting) problem is to consider predicting a (response) variable $Y$ as a function of an explanatory variable $x$.
+
+```{r, echo = FALSE, out.width = "270px", fig.align='center'}
+set.seed(1)
+x <- seq(from = -11, to = 17, by = 0.1)
+y <- 300 - x^2 -20*x + 1/10*x^3
+yerr <- rep(y, 15) + rnorm(length(y)*15, mean = 3, sd = 100)
+plot(x, y, type = "l", lwd = 5, col = "blue", ylim = c(-250, 600), main = "Below: Blue line, f(x), is the 'true' relationship between x and y")
+lines(rep(x, 15), yerr, type = "p", cex = 0.4)
+```
+
+
+
+
+Now that we have an $x$, $E(Y|x)$ will minimize 
+$$E\left[(Y-c)^2|x\right]$$
+
+\newpage
+
+## Approximating $f(x)$
+
+Although the true relationship is most certainly nonlinear, we may be ok approximating the relationship linearly.  For example, consider the same plot as above but between 0 and 5 only:
+
+```{r  echo = FALSE, out.width = "350px", fig.align='center'}
+plot(x, y, type = "l", lwd = 5, col = "blue", ylim = c(-250, 600), main = "Blue line, f(x), is the 'true' relationship between x and y", xlim = c(0, 5))
+lines(rep(x, 15), yerr, type = "p", cex = 0.4)
+```
+
+That's pretty linear.  Consider plot between 5 and 15:
+
+```{r, echo = FALSE, out.width = "350px", fig.align='center'}
+plot(x, y, type = "l", lwd = 5, col = "blue", ylim = c(-250, 600), main = "Blue line, f(x), is the 'true' relationship between x and y \n Dashed line is the linear approximation", xlim = c(5, 15))
+lines(rep(x, 15), yerr, type = "p", cex = 0.4)
+lines(x, y = -10*x+200, lwd = 4, col = "black", lty = 2)
+```
+
+Line still does a reasonable job and is often used as a basic approximation.  
+
+\newpage
+
+## Linear Regression Model 
+
+The (fitted) linear regression model uses $\hat{f}(x) = \hat\beta_0+\hat\beta_1x$.  This means we want to find the optimal values of $\hat\beta_0$ and $\hat\beta_1$ from:
+
+$$g(y_1,...,y_n|x_1,...,x_n) = \sum_{i=1}^{n} (y_i-\hat{\beta}_0-\hat{\beta}_1x_i)^2$$
+
+ This equation is often called the 'sum of squared errors (or residuals)' or the 'residual sum of squares'.  The model for the data, $E(Y|x) = f(x) = \beta_0+\beta_1 x$ is called the Simple Linear Regression (SLR) model. 
+
+\color{black}
+```{r echo = FALSE, out.width = "270px", fig.align='center', warning = FALSE, message = FALSE}
+#set.seed(1)
+#create data for minesweeper for first pass
+#bombs <- rep(30:55, each = 10)
+#minesweeper <- data.frame(bombs = bombs, clicks = 25 - bombs/3 + round(rnorm(length(bombs), mean = 0, sd = 2)))
+
+minesweeper <- read_csv("minesweeper.csv")
+minesweeper$bombs <- minesweeper$Bombs
+minesweeper$clicks <- minesweeper$Clicks
+
+plot(x = minesweeper$bombs, y= minesweeper$clicks, main = "SLR: X = # of Bombs, Y = # of Clicks", xlab = "Bombs", ylab = "Clicks")
+fit <- lm(clicks ~ bombs, data = minesweeper)
+abline(fit)
+segments(minesweeper$bombs, minesweeper$clicks, y1 = predict(fit))
+```
+
+Calculus allows us to find the 'least squares' estimators, $\hat\beta_0$ and $\hat\beta_1$ in a nice closed-form!
+
+
+\newpage
+
+# Day 3: Fitting a Linear Regression Model in R
+
+\textbf{Recap:} Our goal is to predict a value of $Y$ while including an explanatory variable $x$.  We are assuming we have a sample of $(x_i, y_i)$ pairs, $i = 1,...,n$.  
+
+The Simple Linear Regression (SLR) model can be used:
+
+$$\hat{f}(x_i) = \hat{y}_i = \hat\beta_0 + \hat\beta_1x_i$$
+where   
+
+  - $y_i$ is our response for the $i^{th}$ observation
+  - $x_i$ is the value of our explanatory variable for the $i^{th}$ observation 
+  - $\beta_0$ is the y intercept
+  - $\beta_1$ is the slope
+
+The best model to use if we consider squared error loss has 
+$$\hat{\beta}_1 = \frac{\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}$$
+$$\hat{\beta}_0 = \bar{y}-\bar{x}\hat{\beta}_1$$
+
+called the 'least squares estimates'.
+
+
+## Data Intro
+
+This [dataset contains information about used motorcycles and their cost](https://www.kaggle.com/nehalbirla/motorcycle-dataset?select=BIKE+DETAILS.csv). 
+
+From the information page: This data can be used for a lot of purposes such as price prediction to exemplify the use of linear regression in Machine Learning.  The columns in the given dataset are as follows:
+
+- name
+- selling price
+- year
+- seller type
+- owner
+- km driven
+- ex showroom price
+
+The data are available to download from this URL:  
+<https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.csv>
+
+## Read in Data and Explore!  
+
+```{r warning = FALSE, message = FALSE}
+library(tidyverse)
+bikeData <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/bikeDetails.csv")
+bikeData <- bikeData %>% tidyr::drop_na()
+select(bikeData, selling_price, year, km_driven, ex_showroom_price, name, everything())
+```
+Our 'response' variable here is the `selling_price` and we could use the variable `year`, `km_driven`, or `ex_showroom_price` as the explanatory variable.  Let's make some plots and summaries to explore.  To R!
+
+\newpage
+
+## 'Fitting' the Model  
+
+Basic *linear model* fits done with `lm()`.  First argument is a `formula`:
+$$response~variable \sim modeling~variable(s)$$
+
+We specify the modeling variable(s) with a `+` sign separating variables.  With SLR, we only have one variable on the right hand side.
+
+```{r}
+fit <- lm(selling_price ~ ex_showroom_price, data = bikeData)
+fit
+```
+
+We can easily pull off things like the coefficients.
+```{r}
+coefficients(fit) #helper function
+```
+
+Manually predict for an `ex_showroom_price` of 50000:
+
+```{r}
+intercept <- coefficients(fit)[1]
+slope <- coefficients(fit)[2]
+intercept + slope * 50000
+```
+
+We can also look at the fit of the line on the graph.
+
+```{r, out.width = "300px", fig.align='center', warning = FALSE, message = FALSE}
+ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_x_continuous(limits = c(25000, 100000)) +
+  scale_y_continuous(limits = c(0, 120000))
+```
+
+## Predicting!  
+
+Can predict the `selling_price` for a given `ex_showroom_price` easily using the `predict()` function.  
+
+```{r}
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)))
+```
+
+\newpage
+
+## Error Assumptions
+
+Although, not needed for prediction, we often assume that we observe our response variable $Y$ as a function of the line plus random errors:
+$$Y_i = \beta_0+\beta_1x_i + E_i$$
+where the errors come from a Normal distribution with mean 0 and variance $\sigma^2$ ($E_i\stackrel{iid}\sim N(0,\sigma^2)$)
+
+If we do this and use probability theory  (maximum likelihood), we will get the same estimates for the slope and interceptas above!  
+
+What we get from the normality assumption (if reasonable) is the knowledge of the distribution of our estimators ($\hat\beta_0$ and $\hat\beta_1$).  
+
+What does knowing the distribution allow us to do?  We can create confidence intervals or conduct hypothesis tests.
+
+\vspace{2in}
+
+- Get standard error (SE) for prediction
+```{r}
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)), se.fit = TRUE)
+```
+
+- Get confidence interval for mean response
+```{r}
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)),
+        se.fit = TRUE, interval = "confidence")
+```
+
+- Get prediction interval for new response
+```{r}
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000, 100000)),
+        interval = "prediction")
+```
+
+- Can see the confidence and prediction bands on the plot:
+
+```{r, warning = FALSE, out.width = "350px", fig.align='center', message = FALSE}
+library(ciTools)
+bikeData <- add_pi(bikeData, fit, names = c("lower", "upper"))
+
+ggplot(bikeData, aes(x = ex_showroom_price, y = selling_price)) +
+  geom_point() + 
+	geom_smooth(method = "lm", fill = "Blue") +
+	geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3, fill = "Red") +
+	ggtitle("Scatter Plot with 95% PI & 95% CI")
+```
+
+\newpage
+
+## Multiple Linear Regression
+
+We can add in more than one explanatory variable using the `formula` for `lm()`.  The ideas all follow through!
+
+\vspace{1.25in}
+
+```{r}
+fit <- lm(selling_price ~ ex_showroom_price + year + km_driven, data = bikeData)
+fit
+```
+
+To predict we now need to specify values for all the explanatory variables.
+
+```{r}
+data.frame(ex_showroom_price = c(50000, 75000),
+                                  year = c(2010, 2011), 
+                                  km_driven = c(15000, 10000))
+
+predict(fit, newdata = data.frame(ex_showroom_price = c(50000, 75000),
+                                  year = c(2010, 2011), 
+                                  km_driven = c(15000, 10000)),
+        se.fit = TRUE, interval = "confidence")
+```
+
+Difficult to visualize the model fit though!
+
+## Evaluating Model Accuracy
+
+Which model is better?  Ideally we want a model that can predict **new** data better, not the data we've already seen.  We need a **test** set to predict on.  We also need to quantify what me mean by better!  
+
+### Training and Test Sets
+
+We can split the data into a **training set** and **test set**.  
+
+```{r, echo = FALSE, out.width="400px"}
+knitr::include_graphics("trainingtest.png")
+```
+
+- On the training set we can fit (or train) our models.  The data from the test set isn't used at all in this process.
+- We can then predict for the test set observations (for the combinations of explanatory variables seen in the test set).  Can then compare the predicted values to the actual observed responses from the test set.
+
+Let's jump into R and fit our SLR model and compare it to an MLR model.  
+
+Split data randomly:
+
+```{r}
+set.seed(1)
+numObs <- nrow(bikeData)
+index <- sample(1:numObs, size = 0.7*numObs, replace = FALSE)
+train <- bikeData[index, ]
+test <- bikeData[-index, ]
+```
+
+Fit the models on the training data only.
+
+```{r}
+fitSLR <- lm(selling_price ~ ex_showroom_price , data = train)
+fitMLR <- lm(selling_price ~ ex_showroom_price + year + km_driven, data = train)
+```
+
+Predict on the test set.
+```{r}
+predSLR <- predict(fitSLR, newdata = test)
+predMLR <- predict(fitMLR, newdata = test)
+tibble(predSLR, predMLR, test$selling_price)
+```
+
+### Root Mean Square Error
+
+Which is better??  Can use squared error loss to evaluate!  (Square root of the mean squared error loss is often reported instead and is called RMSE or Root Mean Square Error.)
+
+```{r}
+sqrt(mean((predSLR - test$selling_price)^2))
+sqrt(mean((predMLR - test$selling_price)^2))
+```
+
+MLR fit does much better at predicting!  
+
+
+\newpage
+
+# Day 4: Another Modeling Approach (k Nearest Neighbors)
+
+
+\textbf{Recap:} Our previous goal was to predict a value of $Y$ while including an explanatory variable $x$.  With that $x$, we said $E(Y|x)$ will minimize 
+$$E\left[(Y-c)^2|x\right]$$
+We called this true unknown value $E(Y|x) = f(x)$.  
+
+Given observed $Y$'s and $x$'s, we can estimate this function as $\hat{f}(x)$ (with SLR we estimated it with $\hat\beta_0+\hat\beta_1 x$).  This $\hat{f}(x)$ will minimize 
+
+$$g(y_1,...,y_n|x_1,...,x_n) = \frac{1}{n}\sum_{i=1}^{n}L(y_i, \hat{f}(x_i)) = \frac{1}{n}\sum_{i=1}^{n} (y_i-\hat{f}(x_i))^2$$
+
+What other things could we consider for $f(x)$???  
+
+Consider the minesweeper data we collected previously.
+
+\newpage
+
+Let's visualize that idea and compare it to the SLR fit!
+
+```{r, echo = FALSE, out.width = "280px", fig.align = 'center'}
+# means <- cars %>% 
+#   group_by(speed) %>% 
+#   summarize(mean = mean(dist))
+# means
+# 
+# #add first and last values to get break points for plotting
+# library(zoo)
+# speedBars <- c(min(cars$speed)-0.5, rollmean(unique(cars$speed), 2), max(cars$speed)+0.5)
+# plot(x = cars$speed, y= cars$dist, main = "Using Local Mean as an Estimate", xlab = "Speed", ylab = "Distance")
+# segments(x0 = speedBars[-length(speedBars)], x1 = speedBars[-1], y0 = means$mean, y1 = means$mean, lwd = 2)
+# 
+# #add linear fit for comparison 
+# fit <- lm(dist ~ speed, data = cars)
+# plot(x = cars$speed, y= cars$dist, main = "Using Local Mean as an Estimate", xlab = "Speed", ylab = "Distance")
+# segments(x0 = speedBars[-length(speedBars)], x1 = speedBars[-1], y0 = means$mean, y1 = means$mean, lwd = 2)
+# abline(fit, lwd = 2)
+
+#get means
+means <- minesweeper %>%
+  group_by(bombs) %>%
+  summarize(mean = mean(clicks))
+means
+
+#Local min vis
+plot(x = minesweeper$bombs, y= minesweeper$clicks, main = "Using Local Mean", xlab = "Bombs", ylab = "Clicks")
+segments(x0 = unique(minesweeper$bombs)-0.5, x1 = unique(minesweeper$bombs)+0.5, y0 = means$mean, y1 = means$mean, lwd = 2)
+
+#Compare to SLR
+fit <- lm(clicks ~ bombs, data = minesweeper)
+plot(x = minesweeper$bombs, y= minesweeper$clicks, main = "Using Local Mean vs SLR", xlab = "Bombs", ylab = "Clicks")
+abline(fit, lwd = 2)
+segments(x0 = unique(minesweeper$bombs)-0.5, x1 = unique(minesweeper$bombs)+0.5, y0 = means$mean, y1 = means$mean, lwd = 2)
+
+
+```
+
+This is the idea of $k$ Nearest Neighbors (kNN) for predicting a numeric response!  
+
+## kNN
+
+To predict a value of our (numeric) response kNN uses the **average of the $k$ 'closest' responses**.  For numeric data, we usually use Euclidean distance ($d(x_1, x_2) = \sqrt{(x_1-x_2)^2}$) to determine the closest values.  
+
+- Large $k$ implies more rigid (possibly *underfit* but lower variance prediction).  
+- Smaller $k$ implies less rigid (possible *overfit* with high variance in prediction)  
+
+[Let's check out this app](https://shiny.stat.ncsu.edu/jbpost2/CardSim/).
+
+For the minesweeper data, we had many values at the same $x$ (\# of bombs).  That's why we considered using only 10, 30, 50, ...  Otherwise, we have ties and then things get tricky!  
+
+## Choosing the Value of $k$
+
+How do we choose which $k$ value to use?  We can do a similar training vs test set idea.  Fit the models (one model for each $k$) and predict on the test set.  The model with the lowest Root Mean Squared Error (RMSE) on the test set can be chosen!  
+
+## kNN Models for `selling_price` from the Bike Dataset  
+
+Previously, we fit the SLR model using the `ex_showroom_price` to predict our `selling_price` of motorcycles.  We'll refit this using the training data here.
+
+```{r}
+fitSLR <- lm(selling_price ~ ex_showroom_price, data = train)
+```
+
+Obtain the prediction on the test set.
+```{r}
+predSLR <- predict(fitSLR, newdata = test)
+```
+
+
+Let's now fit the kNN model using a few values of $k$.
+
+$k = 1$:
+
+```{r, warning = FALSE, message = FALSE}
+library("caret")
+k <- 1
+kNNFit1 <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit1
+predkNN1 <- predict(kNNFit1, newdata = test)
+```
+
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit1, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price")
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+$k = 10$:
+
+```{r}
+k <- 10
+kNNFit10 <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit10
+predkNN10 <- predict(kNNFit10, newdata = test)
+
+```
+
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit10, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+
+$k = 20$:
+
+```{r}
+k <- 20
+kNNFit20 <-train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit20
+predkNN20 <- predict(kNNFit20, newdata = test)
+```
+
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit20, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+$k = 50$:
+
+```{r}
+k <- 50
+kNNFit50 <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit50
+predkNN50 <- predict(kNNFit50, newdata = test)
+```
+
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit50, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+$k = 100$:
+
+```{r}
+k <- 100
+kNNFit100 <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k)
+      )
+kNNFit100
+predkNN100 <- predict(kNNFit100, newdata = test)
+```
+
+```{r, echo = FALSE, fig.align='center', out.width="350px"}
+grid <- data.frame(ex_showroom_price = seq(10000, 600000, by = 10))
+kNNPred <- predict(kNNFit100, grid)
+
+#plot with overlay
+plot(x = train$ex_showroom_price, y= train$selling_price, main = "kNN predictions vs SLR", xlab = "Showroom Price", ylab = "Selling Price", xlim = c(0, 250000), ylim = c(0, 200000))
+    lines(x = grid$ex_showroom_price, y = kNNPred, type = "S", lwd = 2)
+    #add linear fit
+    fit <- lm(selling_price ~ ex_showroom_price, data = train)
+    abline(fit)
+```
+
+
+### Compare test set RMSE!
+
+```{r}
+RMSE <- function(pred, test){sqrt(mean((pred-test)^2))}
+SLR <- RMSE(predSLR, test$selling_price)
+kNN1 <- RMSE(predkNN1, test$selling_price)
+kNN10 <- RMSE(predkNN10, test$selling_price)
+kNN20 <- RMSE(predkNN20, test$selling_price)
+kNN50 <- RMSE(predkNN50, test$selling_price)
+kNN100 <- RMSE(predkNN100, test$selling_price)
+
+data.frame(method = c("SLR", "kNN1", "kNN10", "kNN20", "kNN50", "kNN100"),
+           RMSE = c(SLR, kNN1, kNN10, kNN20, kNN50, kNN100))
+```
+
+Ok, of course we don't want to do this manually in real life...  What we actually do:
+
+\newpage
+
+R makes it easy!  To choose a kNN model we can run code like this:
+
+```{r}
+k <- 1:100
+kNNFit <- train(selling_price ~ ex_showroom_price, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k), 
+      trControl = trainControl(method = "cv", number = 10)
+      )
+kNNFit
+```
+
+The chosen model can then be used to predict just as before.
+
+```{r}
+predkNN <- predict(kNNFit, newdata = test)
+postResample(predkNN, test$selling_price)
+```
+
+The same process can be used to fit and predict for an SLR or MLR model.
+
+```{r}
+SLRFit <- train(selling_price ~ ex_showroom_price,
+                data = train,
+                method = "lm",
+                trControl = trainControl(method = "cv", number = 10)
+                )
+SLRFit
+predSLR <- predict(SLRFit, newdata = test)
+postResample(predSLR, test$selling_price)
+
+```
+
+## Multiple Predictors
+
+Just like SLR can include multiple explanatory variables, we can include multiple explanatory variables with kNN (they must all be numeric unless you develop or use a 'distance' measure that is appropriate for categorical data).  
+
+With all numeric explanatory variables, we often use Euclidean distance as our distance metric.  For instance, with two explanatory variables $x_1$ and $x_2$:
+$$d(x_1, x_2) = \sqrt{(x_{11}-x_{12})^2+(x_{21}-x_{22})^2}$$
+
+The same model notation from before can be used:
+$$respons~variable \sim explanatory~variable1 + explanatory~variable2 +...$$
+
+Along with the same kind of R code to fit the model:
+
+```{r}
+k <- 1:100
+kNNFit <- train(selling_price ~ ex_showroom_price + km_driven + year, 
+      data = train, 
+      method = "knn", 
+      tuneGrid = data.frame(k =k), 
+      trControl = trainControl(method = "cv", number = 10)
+      )
+kNNFit
+```
+
+The chosen model can then be used to predict just as before.
+
+```{r}
+predkNN <- predict(kNNFit, newdata = test)
+postResample(predkNN, test$selling_price)
+```
+
+Just for reference: let's compare this to the MLR output.
+
+```{r}
+MLRFit <- train(selling_price ~ ex_showroom_price + km_driven + year, 
+      data = train, 
+      method = "lm", 
+      trControl = trainControl(method = "cv", number = 10)
+      )
+MLRFit
+predMLR <- predict(MLRFit, newdata = test)
+postResample(predMLR, test$selling_price)
+```
+
+Note: Practical use of kNN says we should usually standardize (center to have mean 0 and scale to have standard deviation 1) our numeric explanatory variables.  Why?
+
+
+\newpage
+
+# Day 5: Competition!
+
+Time to put what we've learned into practice!  [Kaggle](https://www.kaggle.com) is a site that hosts competitions around predicting a response (either a numeric response or predicting the category that an observation might belong to).  
+
+## Housing Prices
+
+Let's go check out our competition: <https://www.kaggle.com/c/house-prices-advanced-regression-techniques/overview>
+
+Use the starter files to come up with some models!

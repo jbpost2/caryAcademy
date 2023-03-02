@@ -1,0 +1,13 @@
+name: knnca
+title: kNNCA
+username: jbpost2@ncsu.edu
+account: jbpost2@ncsu.edu
+server: shiny.stat.ncsu.edu
+hostUrl: https://shiny.stat.ncsu.edu/__api__
+appId: 61
+bundleId: 93
+url: https://shiny.stat.ncsu.edu/content/9ecdb2eb-a412-4c2a-ab04-944fa61a1afa/
+when: 1677777834.01473
+lastSyncTime: 1677777834.01474
+asMultiple: FALSE
+asStatic: FALSE
