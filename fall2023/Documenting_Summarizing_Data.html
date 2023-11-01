@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Summarizing (&amp; Documenting!) Data</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/5235085b15.js"></script>
+    <link rel="stylesheet" href="css/ncsu.css" type="text/css" />
+    <link rel="stylesheet" href="css/ncsu-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+layout: false
+class: title-slide-section-red, middle
+
+# Summarizing (&amp; Documenting!) Data
+Justin Post
+
+---
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;img src="img/logo.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+
+---
+
+# ASA Fall Data Challenge
+
+.pull-left[
+Consulting!
+
+&gt; A startup is considering developing a bootcamp for coders and people who want to work as developers. They’ve hired your team to give them insights on their business model and want you to analyze the 2023 Stack Overflow Developer Survey.
+]
+
+--
+
+.pull-right[
+&lt;img src="img/consulting.jpg" width="350px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# ASA Fall Data Challenge
+
+Sufficient initial funding to focus on 2 languages and to initiate planning for a third. 
+
+--
+
+.pull-left[
+- Recommendations for their focus?  
+
+- Demographic characteristics?  
+]
+
+
+
+---
+
+# ASA Fall Data Challenge
+
+Sufficient initial funding to focus on 2 languages and to initiate planning for a third. 
+
+.pull-left[
+- Recommendations for their focus?  
+
+- Demographic characteristics?  
+
+- Visualizations to **comfort** investors?
+]
+
+.pull-right[
+&lt;img src="img/your-data-visualization.jpg" width="450px" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# Final Product
+
+- Create pdf slide presentation (&lt; 11 slides)  
+
+    + Clear how data is utilized  
+    + Description of technical details
+
+- Each member of the winning team will receive a $50 gift card.    
+
+--
+
+.pull-left[
+# Goals
+
+- Win!
+]
+
+.pull-right[
+&lt;img src="img/competition.jpg" width="300px" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# Final Product
+
+- Create pdf slide presentation (&lt; 11 slides)  
+
+    + Clear how data is utilized  
+    + Description of technical details
+
+- Each member of the winning team will receive a $50 gift card.    
+
+
+.pull-left[
+# Goals
+
+- Learn! (of course!)
+]
+
+.pull-right[
+&lt;img src="img/learning.jpg" width="400px" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# Group Chat!
+
+.pull-left[
+5ish minutes:
+
+- Discuss your ideas after reading the survey
+- Which parts are most relevant?
+- What other data might be relevant?
+- After discussion, write your consensus on the board (focus on the survey)!
+]
+
+.pull-right[
+&lt;img src="img/teamwork.jpg" width="500px" style="display: block; margin: auto;" /&gt;
+]
+&lt;!-- Go over their thoughts--&gt;
+
+
+---
+
+# How Do We ~~Win~~ Learn?
+
+Workflow: 
+
+- Read that data in!
+    + Available at &lt;https://www4.stat.ncsu.edu/~online/datasets/survey_results_public.csv&gt;
+
+--
+
+- Validate/understand data
+
+--
+
+.pull-left[
+- Modify data
+
+- Create graphs/find insights
+
+**Should document all of the above!**
+
+- Create slides &amp; communicate findings
+]
+
+---
+
+# How Do We ~~Win~~ Learn?
+
+Workflow: 
+
+- Read that data in!
+    + Available at &lt;https://www4.stat.ncsu.edu/~online/datasets/survey_results_public.csv&gt;
+
+
+- Validate/understand data
+
+
+.pull-left[
+- Modify data
+
+- Create graphs/find insights
+
+**Should document all of the above!**
+
+- Create slides &amp; communicate findings
+]
+
+.pull-right[
+&lt;img src="img/better.jpg" width="500px" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# R Markdown to the Rescue!
+
+.pull-left[
+Makes coding process reproducible and creation of documents natural!  
+
+- `.Rmd` file extension
+- Can create all sorts of documents with code and output embedded!
+]
+
+.pull-right[
+&lt;img src="img/markdown.png" width="825px" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# `.Rmd` Files
+
+Three important types of content:
+  
+1. YAML header at top
+
+    + Defines meta data
+    
+--
+
+```
+---
+title: "Untitled"
+author: "First Last"
+date: "xxxx"
+output: html_document
+---
+```  
+
+---
+
+# `.Rmd` Files
+
+Three important types of content:
+  
+1. YAML header at top
+
+    + Defines meta data
+    
+2. Chunks of R code   
+
+    + Code that (may) evaluate and produce output
+    
+--
+
+&lt;img src="img/chunk.png" width="500px" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# `.Rmd` Files
+
+Three important types of content:
+  
+1. YAML header at top
+
+    + Defines meta data
+    
+2. Chunks of R code   
+
+    + Code that (may) evaluate and produce output
+
+3. Text mixed with simple text formatting instructions (R Markdown syntax)
+
+    + [Cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+  
+---
+
+# Create a `.Rmd`
+
+Let's see how it works!
+
+.pull-left[
+&lt;img src="img/startMD.PNG" width="550px" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="img/startMDDoc.PNG" width="550px" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# Recap 
+
+- R Markdown very powerful for optimizing workflow and reproducibility
+
+.pull-left[
+- Three main types of content
+
+    1. YAML header
+    2. Code chunks
+    3. Markdown text
+]
+
+.pull-right[
+&lt;img src="img/mario-movie-donkey-kong.gif" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+layout: false
+class: title-slide-section-red, middle
+
+.pull-left[
+# Summarizing (&amp; Documenting!) Data: Day 2
+Justin Post
+]
+
+.pull-right[
+&lt;img src="img/sequel.jpg" width="400px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;img src="img/logo.png" style="height: 60px;"/&gt;&lt;/div&gt; 
+
+---
+
+# We Got Data! Now what?
+
+--
+
+.pull-left[
+&lt;img src="img/data.png" width="400px" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+
+```r
+str(survey)
+```
+
+```
+## spc_tbl_ [89,184 × 84] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ ResponseId                         : num [1:89184] 1 2 3 4 5 6 7 8 9 10 ...
+##  $ Q120                               : chr [1:89184] "I agree" "I agree" "I agree" "I agree" ...
+##  $ MainBranch                         : chr [1:89184] "None of these" "I am a developer by profession" "I am a developer by profession" "I am a developer by profession" ...
+##  $ Age                                : chr [1:89184] "18-24 years old" "25-34 years old" "45-54 years old" "25-34 years old" ...
+##  $ Employment                         : chr [1:89184] NA "Employed, full-time" "Employed, full-time" "Employed, full-time" ...
+##  $ RemoteWork                         : chr [1:89184] NA "Remote" "Hybrid (some remote, some in-person)" "Hybrid (some remote, some in-person)" ...
+##  $ CodingActivities                   : chr [1:89184] NA "Hobby;Contribute to open-source projects;Bootstrapping a business;Professional development or self-paced learni"| __truncated__ "Hobby;Professional development or self-paced learning from online courses" "Hobby" ...
+##  $ EdLevel                            : chr [1:89184] NA "Bachelor’s degree (B.A., B.S., B.Eng., etc.)" "Bachelor’s degree (B.A., B.S., B.Eng., etc.)" "Bachelor’s degree (B.A., B.S., B.Eng., etc.)" ...
+##  $ LearnCode                          : chr [1:89184] NA "Books / Physical media;Colleague;Friend or family member;Hackathons (virtual or in-person);Online Courses or Ce"| __truncated__ "Books / Physical media;Colleague;On the job training;Other online resources (e.g., videos, blogs, forum);School"| __truncated__ "Colleague;Friend or family member;Other online resources (e.g., videos, blogs, forum);School (i.e., University, College, etc)" ...
+##  $ LearnCodeOnline                    : chr [1:89184] NA "Formal documentation provided by the owner of the tech;Blogs with tips and tricks;Books;Recorded coding session"| __truncated__ "Formal documentation provided by the owner of the tech;Blogs with tips and tricks;How-to videos;Online challeng"| __truncated__ "Formal documentation provided by the owner of the tech;Blogs with tips and tricks;Auditory material (e.g., podc"| __truncated__ ...
+##  $ LearnCodeCoursesCert               : chr [1:89184] NA "Other" NA NA ...
+##  $ YearsCode                          : chr [1:89184] NA "18" "27" "12" ...
+##  $ YearsCodePro                       : chr [1:89184] NA "9" "23" "7" ...
+##  $ DevType                            : chr [1:89184] NA "Senior Executive (C-Suite, VP, etc.)" "Developer, back-end" "Developer, front-end" ...
+##  $ OrgSize                            : chr [1:89184] NA "2 to 9 employees" "5,000 to 9,999 employees" "100 to 499 employees" ...
+##  $ PurchaseInfluence                  : chr [1:89184] NA "I have a great deal of influence" "I have some influence" "I have some influence" ...
+##  $ TechList                           : chr [1:89184] NA "Investigate" "Given a list" "Investigate" ...
+##  $ BuyNewTool                         : chr [1:89184] NA "Start a free trial;Ask developers I know/work with;Visit developer communities like Stack Overflow;Other (please specify):" "Start a free trial;Ask developers I know/work with;Visit developer communities like Stack Overflow" "Start a free trial;Ask developers I know/work with;Visit developer communities like Stack Overflow" ...
+##  $ Country                            : chr [1:89184] NA "United States of America" "United States of America" "United States of America" ...
+##  $ Currency                           : chr [1:89184] NA "USD\tUnited States dollar" "USD\tUnited States dollar" "USD\tUnited States dollar" ...
+##  $ CompTotal                          : num [1:89184] NA 285000 250000 156000 1320000 78000 135000 80000 60000 NA ...
+##  $ LanguageHaveWorkedWith             : chr [1:89184] NA "HTML/CSS;JavaScript;Python" "Bash/Shell (all shells);Go" "Bash/Shell (all shells);HTML/CSS;JavaScript;PHP;Ruby;SQL;TypeScript" ...
+##  $ LanguageWantToWorkWith             : chr [1:89184] NA "Bash/Shell (all shells);C#;Dart;Elixir;GDScript;HTML/CSS;JavaScript;Rust" "Haskell;OCaml;Rust" "Bash/Shell (all shells);HTML/CSS;JavaScript;Ruby;TypeScript" ...
+##  $ DatabaseHaveWorkedWith             : chr [1:89184] NA "Supabase" NA "PostgreSQL;Redis" ...
+##  $ DatabaseWantToWorkWith             : chr [1:89184] NA "Firebase Realtime Database;Supabase" NA "PostgreSQL;Redis" ...
+##  $ PlatformHaveWorkedWith             : chr [1:89184] NA "Amazon Web Services (AWS);Netlify;Vercel" "Amazon Web Services (AWS);Google Cloud;OpenStack;VMware;Vultr" "Cloudflare;Heroku" ...
+##  $ PlatformWantToWorkWith             : chr [1:89184] NA "Fly.io;Netlify;Render" NA "Cloudflare;Heroku" ...
+##  $ WebframeHaveWorkedWith             : chr [1:89184] NA "Next.js;React;Remix;Vue.js" NA "Node.js;React;Ruby on Rails;Vue.js;WordPress" ...
+##  $ WebframeWantToWorkWith             : chr [1:89184] NA "Deno;Elm;Nuxt.js;React;Svelte;Vue.js" NA "Node.js;Ruby on Rails;Vue.js" ...
+##  $ MiscTechHaveWorkedWith             : chr [1:89184] NA "Electron;React Native;Tauri" NA NA ...
+##  $ MiscTechWantToWorkWith             : chr [1:89184] NA "Capacitor;Electron;Tauri;Uno Platform;Xamarin" NA NA ...
+##  $ ToolsTechHaveWorkedWith            : chr [1:89184] NA "Docker;Kubernetes;npm;Pip;Vite;Webpack;Yarn" "Cargo;Docker;Kubernetes;Make;Nix" "Homebrew;npm;Vite;Webpack;Yarn" ...
+##  $ ToolsTechWantToWorkWith            : chr [1:89184] NA "Godot;npm;pnpm;Unity 3D;Unreal Engine;Vite;Webpack;Yarn" "Cargo;Kubernetes;Nix" "Homebrew;npm;Vite" ...
+##  $ NEWCollabToolsHaveWorkedWith       : chr [1:89184] NA "Vim;Visual Studio Code" "Emacs;Helix" "IntelliJ IDEA;Vim;Visual Studio Code;WebStorm" ...
+##  $ NEWCollabToolsWantToWorkWith       : chr [1:89184] NA "Vim;Visual Studio Code" "Emacs;Helix" "IntelliJ IDEA;Vim;WebStorm" ...
+##  $ OpSysPersonal use                  : chr [1:89184] NA "iOS;iPadOS;MacOS;Windows;Windows Subsystem for Linux (WSL)" "MacOS;Other Linux-based" "iOS;iPadOS;MacOS" ...
+##  $ OpSysProfessional use              : chr [1:89184] NA "MacOS;Windows;Windows Subsystem for Linux (WSL)" "MacOS;Other Linux-based" "iOS;iPadOS;MacOS" ...
+##  $ OfficeStackAsyncHaveWorkedWith     : chr [1:89184] NA "Asana;Basecamp;GitHub Discussions;Jira;Linear;Notion;Trello" "Markdown File;Stack Overflow for Teams" "Jira" ...
+##  $ OfficeStackAsyncWantToWorkWith     : chr [1:89184] NA "GitHub Discussions;Linear;Notion;Trello" "Markdown File" "Jira" ...
+##  $ OfficeStackSyncHaveWorkedWith      : chr [1:89184] NA "Cisco Webex Teams;Discord;Google Chat;Google Meet;Signal;Skype;Slack;Telegram;Whatsapp;Zoom" "Microsoft Teams;Slack;Zoom" "Discord;Google Meet;Microsoft Teams;Slack;Zoom" ...
+##  $ OfficeStackSyncWantToWorkWith      : chr [1:89184] NA "Discord;Signal;Slack;Zoom" "Slack;Zoom" "Discord;Google Meet;Slack;Zoom" ...
+##  $ AISearchHaveWorkedWith             : chr [1:89184] NA "ChatGPT" NA NA ...
+##  $ AISearchWantToWorkWith             : chr [1:89184] NA "ChatGPT;Neeva AI" NA NA ...
+##  $ AIDevHaveWorkedWith                : chr [1:89184] NA "GitHub Copilot" NA NA ...
+##  $ AIDevWantToWorkWith                : chr [1:89184] NA "GitHub Copilot" NA NA ...
+##  $ NEWSOSites                         : chr [1:89184] NA "Stack Overflow;Stack Exchange" "Stack Overflow;Stack Exchange;Stack Overflow for Teams (private knowledge sharing &amp; collaboration platform for companies)" "Stack Overflow;Stack Exchange" ...
+##  $ SOVisitFreq                        : chr [1:89184] NA "Daily or almost daily" "A few times per month or weekly" "A few times per week" ...
+##  $ SOAccount                          : chr [1:89184] NA "Yes" "Yes" "Yes" ...
+##  $ SOPartFreq                         : chr [1:89184] NA "A few times per month or weekly" "Less than once per month or monthly" "Less than once per month or monthly" ...
+##  $ SOComm                             : chr [1:89184] NA "Yes, definitely" "Neutral" "No, not really" ...
+##  $ SOAI                               : chr [1:89184] NA "I don't think it's super necessary, but I think improving search and clarifying poorly worded questions would b"| __truncated__ NA "I'm wearing of Stack Overflow using AI." ...
+##  $ AISelect                           : chr [1:89184] NA "Yes" "No, and I don't plan to" "No, and I don't plan to" ...
+##  $ AISent                             : chr [1:89184] NA "Indifferent" NA NA ...
+##  $ AIAcc                              : chr [1:89184] NA "Other (please explain)" NA NA ...
+##  $ AIBen                              : chr [1:89184] NA "Somewhat distrust" NA NA ...
+##  $ AIToolInterested in Using          : chr [1:89184] NA "Learning about a codebase;Writing code;Debugging and getting help" NA NA ...
+##  $ AIToolCurrently Using              : chr [1:89184] NA "Writing code;Committing and reviewing code" NA NA ...
+##  $ AIToolNot interested in Using      : chr [1:89184] NA NA NA NA ...
+##  $ AINextVery different               : chr [1:89184] NA NA NA NA ...
+##  $ AINextNeither different nor similar: chr [1:89184] NA NA NA NA ...
+##  $ AINextSomewhat similar             : chr [1:89184] NA NA NA NA ...
+##  $ AINextVery similar                 : chr [1:89184] NA NA NA NA ...
+##  $ AINextSomewhat different           : chr [1:89184] NA NA NA NA ...
+##  $ TBranch                            : chr [1:89184] NA "Yes" "Yes" "Yes" ...
+##  $ ICorPM                             : chr [1:89184] NA "People manager" "Individual contributor" "Individual contributor" ...
+##  $ WorkExp                            : num [1:89184] NA 10 23 7 6 22 4 5 NA NA ...
+##  $ Knowledge_1                        : chr [1:89184] NA "Strongly agree" "Strongly agree" "Strongly agree" ...
+##  $ Knowledge_2                        : chr [1:89184] NA "Agree" "Neither agree nor disagree" "Strongly disagree" ...
+##  $ Knowledge_3                        : chr [1:89184] NA "Strongly agree" "Agree" "Strongly agree" ...
+##  $ Knowledge_4                        : chr [1:89184] NA "Agree" "Agree" "Strongly agree" ...
+##  $ Knowledge_5                        : chr [1:89184] NA "Agree" "Agree" "Agree" ...
+##  $ Knowledge_6                        : chr [1:89184] NA "Agree" "Agree" "Neither agree nor disagree" ...
+##  $ Knowledge_7                        : chr [1:89184] NA "Agree" "Agree" "Agree" ...
+##  $ Knowledge_8                        : chr [1:89184] NA "Strongly agree" "Agree" "Agree" ...
+##  $ Frequency_1                        : chr [1:89184] NA "1-2 times a week" "6-10 times a week" "1-2 times a week" ...
+##  $ Frequency_2                        : chr [1:89184] NA "10+ times a week" "6-10 times a week" "10+ times a week" ...
+##  $ Frequency_3                        : chr [1:89184] NA "Never" "3-5 times a week" "1-2 times a week" ...
+##  $ TimeSearching                      : chr [1:89184] NA "15-30 minutes a day" "30-60 minutes a day" "15-30 minutes a day" ...
+##  $ TimeAnswering                      : chr [1:89184] NA "15-30 minutes a day" "30-60 minutes a day" "30-60 minutes a day" ...
+##  $ ProfessionalTech                   : chr [1:89184] NA "DevOps function;Microservices;Automated testing;Observability tools" "DevOps function;Microservices;Automated testing;Observability tools;Innersource initiative;Developer portal or "| __truncated__ "Automated testing;Continuous integration (CI) and (more often) continuous delivery" ...
+##  $ Industry                           : chr [1:89184] NA "Information Services, IT, Software Development, or other Technology" "Information Services, IT, Software Development, or other Technology" NA ...
+##  $ SurveyLength                       : chr [1:89184] NA "Appropriate in length" "Appropriate in length" "Appropriate in length" ...
+##  $ SurveyEase                         : chr [1:89184] NA "Easy" "Easy" "Easy" ...
+##  $ ConvertedCompYearly                : num [1:89184] NA 285000 250000 156000 23456 ...
+##  - attr(*, "spec")=
+##   .. cols(
+##   ..   ResponseId = col_double(),
+##   ..   Q120 = col_character(),
+##   ..   MainBranch = col_character(),
+##   ..   Age = col_character(),
+##   ..   Employment = col_character(),
+##   ..   RemoteWork = col_character(),
+##   ..   CodingActivities = col_character(),
+##   ..   EdLevel = col_character(),
+##   ..   LearnCode = col_character(),
+##   ..   LearnCodeOnline = col_character(),
+##   ..   LearnCodeCoursesCert = col_character(),
+##   ..   YearsCode = col_character(),
+##   ..   YearsCodePro = col_character(),
+##   ..   DevType = col_character(),
+##   ..   OrgSize = col_character(),
+##   ..   PurchaseInfluence = col_character(),
+##   ..   TechList = col_character(),
+##   ..   BuyNewTool = col_character(),
+##   ..   Country = col_character(),
+##   ..   Currency = col_character(),
+##   ..   CompTotal = col_double(),
+##   ..   LanguageHaveWorkedWith = col_character(),
+##   ..   LanguageWantToWorkWith = col_character(),
+##   ..   DatabaseHaveWorkedWith = col_character(),
+##   ..   DatabaseWantToWorkWith = col_character(),
+##   ..   PlatformHaveWorkedWith = col_character(),
+##   ..   PlatformWantToWorkWith = col_character(),
+##   ..   WebframeHaveWorkedWith = col_character(),
+##   ..   WebframeWantToWorkWith = col_character(),
+##   ..   MiscTechHaveWorkedWith = col_character(),
+##   ..   MiscTechWantToWorkWith = col_character(),
+##   ..   ToolsTechHaveWorkedWith = col_character(),
+##   ..   ToolsTechWantToWorkWith = col_character(),
+##   ..   NEWCollabToolsHaveWorkedWith = col_character(),
+##   ..   NEWCollabToolsWantToWorkWith = col_character(),
+##   ..   `OpSysPersonal use` = col_character(),
+##   ..   `OpSysProfessional use` = col_character(),
+##   ..   OfficeStackAsyncHaveWorkedWith = col_character(),
+##   ..   OfficeStackAsyncWantToWorkWith = col_character(),
+##   ..   OfficeStackSyncHaveWorkedWith = col_character(),
+##   ..   OfficeStackSyncWantToWorkWith = col_character(),
+##   ..   AISearchHaveWorkedWith = col_character(),
+##   ..   AISearchWantToWorkWith = col_character(),
+##   ..   AIDevHaveWorkedWith = col_character(),
+##   ..   AIDevWantToWorkWith = col_character(),
+##   ..   NEWSOSites = col_character(),
+##   ..   SOVisitFreq = col_character(),
+##   ..   SOAccount = col_character(),
+##   ..   SOPartFreq = col_character(),
+##   ..   SOComm = col_character(),
+##   ..   SOAI = col_character(),
+##   ..   AISelect = col_character(),
+##   ..   AISent = col_character(),
+##   ..   AIAcc = col_character(),
+##   ..   AIBen = col_character(),
+##   ..   `AIToolInterested in Using` = col_character(),
+##   ..   `AIToolCurrently Using` = col_character(),
+##   ..   `AIToolNot interested in Using` = col_character(),
+##   ..   `AINextVery different` = col_character(),
+##   ..   `AINextNeither different nor similar` = col_character(),
+##   ..   `AINextSomewhat similar` = col_character(),
+##   ..   `AINextVery similar` = col_character(),
+##   ..   `AINextSomewhat different` = col_character(),
+##   ..   TBranch = col_character(),
+##   ..   ICorPM = col_character(),
+##   ..   WorkExp = col_double(),
+##   ..   Knowledge_1 = col_character(),
+##   ..   Knowledge_2 = col_character(),
+##   ..   Knowledge_3 = col_character(),
+##   ..   Knowledge_4 = col_character(),
+##   ..   Knowledge_5 = col_character(),
+##   ..   Knowledge_6 = col_character(),
+##   ..   Knowledge_7 = col_character(),
+##   ..   Knowledge_8 = col_character(),
+##   ..   Frequency_1 = col_character(),
+##   ..   Frequency_2 = col_character(),
+##   ..   Frequency_3 = col_character(),
+##   ..   TimeSearching = col_character(),
+##   ..   TimeAnswering = col_character(),
+##   ..   ProfessionalTech = col_character(),
+##   ..   Industry = col_character(),
+##   ..   SurveyLength = col_character(),
+##   ..   SurveyEase = col_character(),
+##   ..   ConvertedCompYearly = col_double()
+##   .. )
+##  - attr(*, "problems")=&lt;externalptr&gt;
+```
+]
+
+
+
+---
+
+# How to Summarize Data?
+
+- Depends on data type:  
+
+    + Categorical (Qualitative) variable - entries are a label or attribute   
+    + Numeric (Quantitative) variable - entries are a numerical value where math can be performed
+
+
+&lt;img src="img/variableTypes.png" width="500px" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+# Categorical Data
+
+Goal: Describe the **distribution** of the variable (and relate to other variables) 
+
+- Try to describe relative frequency (or count) in each category
+
+--
+
+.pull-left[
+- [Bar plots!](https://rstudio.github.io/cheatsheets/data-visualization.pdf)
+
+
+```r
+ggplot(data, aes(_map_data_set_values_to_plot_)) +
+  geom_bar() +
+  other_useful_layers()
+```
+]
+
+.pull-right[
+&lt;img src="Documenting_Summarizing_Data_files/figure-html/unnamed-chunk-16-1.svg" width="400px" style="display: block; margin: auto;" /&gt;
+]
+
+
+
+---
+
+# Bar Plots
+
+- Creating factors is the easiest way to work with labels/ordering!
+
+
+```r
+survey &lt;- survey %&gt;% 
+  mutate(EdLevel2 = factor(EdLevel, 
+                           levels = c(
+                             "Something else", 
+                             "Primary/elementary school",                                                         
+                             "Secondary school (e.g. American high school, German Realschule or Gymnasium, etc.)",
+                             "Some college/university study without earning a degree",
+                             "Associate degree (A.A., A.S., etc.)",                                               
+                             "Bachelor’s degree (B.A., B.S., B.Eng., etc.)",                                      
+                             "Master’s degree (M.A., M.S., M.Eng., MBA, etc.)",                                   
+                             "Professional degree (JD, MD, Ph.D, Ed.D, etc.)"                                    
+                           ), 
+                           labels = c("Other", 
+                                      "Primary/Elementary", 
+                                      "High School", 
+                                      "Some College",
+                                      "Associate's",
+                                      "Bachelor's",
+                                      "Master's", 
+                                      "Professional Degree"),
+                           ordered = TRUE)
+         )
+```
+
+
+---
+
+# Bar Plots
+
+.pull-left[
+
+```r
+ggplot(survey %&gt;% 
+         select(EdLevel2) %&gt;% 
+         drop_na(), 
+       aes(x = EdLevel2)) + 
+  geom_bar()
+```
+]
+
+.pull-right[
+&lt;img src="Documenting_Summarizing_Data_files/figure-html/unnamed-chunk-19-1.svg" width="450px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Bar Plots
+
+- Modify parts of plots with more layers!
+
+.pull-left55[
+
+```r
+ggplot(survey %&gt;% 
+         select(EdLevel2) %&gt;% 
+         drop_na(), 
+       aes(x = EdLevel2)) + 
+  geom_bar() +
+* scale_x_discrete(guide = guide_axis(angle = 45)) +
+* labs(x = "Education Level",
+       title = "Most Respondents have a Bachelor's or
+*         Master's Degree")
+```
+]
+
+--
+
+.pull-right45[
+&lt;img src="Documenting_Summarizing_Data_files/figure-html/unnamed-chunk-21-1.svg" width="400px" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# Bar Plots
+
+- Use `fill = another_variable`
+
+.pull-left55[
+
+```r
+ggplot(survey %&gt;% 
+         select(EdLevel2, AISentiment) %&gt;% 
+         filter(AISentiment != "Unsure") %&gt;%
+         drop_na(), 
+*      aes(x = EdLevel2, fill = AISentiment)) +
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(x = "Education Level",
+       title = "Most Respondents have a Bachelor's or 
+          Master's Degree") 
+```
+]
+
+.pull-right45[
+&lt;img src="Documenting_Summarizing_Data_files/figure-html/unnamed-chunk-23-1.svg" width="400px" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# Bar Plots
+
+- Faceting allows for creating similar plots at each *setting* of another variable
+
+.pull-left55[
+
+```r
+ggplot(survey %&gt;% 
+         select(EdLevel2, AISentiment, SOAccount) %&gt;% 
+         filter(AISentiment != "Unsure") %&gt;%
+         drop_na(), 
+       aes(x = EdLevel2, fill = AISentiment)) +
+  geom_bar() +
+* facet_wrap(~SOAccount) +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(x = "Education Level",
+       title = "Most Respondents have a Bachelor's or 
+          Master's Degree", 
+       subtitle = "Favorable or Very Favorable Opinions 
+       of AI are Consistent Across Education Groups\n
+       Trends are similar for those with and without a 
+       Stack Overflow Account")
+```
+]
+
+.pull-right45[
+&lt;img src="Documenting_Summarizing_Data_files/figure-html/unnamed-chunk-25-1.svg" width="450px" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# `ggplot()`
+
+- Other plots follow a similar structure! 
+- Keep the cheat sheet handy!
+
+&lt;img src="img/cheatsheets.jpg" width="355px" style="display: block; margin: auto;" /&gt;
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="js/ncsu-scale.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
