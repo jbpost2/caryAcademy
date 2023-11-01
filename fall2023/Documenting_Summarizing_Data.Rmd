@@ -35,7 +35,7 @@ library(tidyverse)
 library(knitr)
 options(dplyr.print_min = 5)
 
-library(dfexpand)
+#library(dfexpand)
 survey <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/survey_results_public.csv")
 ```
 
