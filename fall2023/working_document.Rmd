@@ -1,10 +1,6 @@
 ---
-title: "Untitled"
-author: "Justin Post"
-date: "2023-11-01"
+title: "Exploring the Survey Data"
 output: html_document
-editor_options: 
-  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -18,27 +14,120 @@ library(tidyverse)
 We'll read in our data from a URL using the `read_csv()` function.
 
 ```{r}
-survey_data <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/survey_results_public.csv")
-survey_data
+survey <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/survey_results_public.csv")
+survey
 ```
 
 
-## R Markdown
+## Manipulating Data
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+As much of the data has been read in as character data, we have a good bit of work to do getting it ready to plot and summarize!
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Let's look at a manipulation of two variables: `EdLevel` and `AISent`.
 
-```{r cars}
-summary(cars)
+First, what values do the two variables take on?
+
+```{r}
+#look at the values the EdLevel variable can take on
+survey %>%
+  select(EdLevel) %>%
+  unique()
+
+survey %>%
+  select(AISent) %>%
+  unique()
 ```
 
-## Including Plots
+Now we can create new variables that are `factor` versions of these variables. As there is an inherent ordering, we'll also add in `ordered = TRUE`. This will make plots put the levels in a certain order!
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+#add a new 'factor' version of the variable to the data set
+survey <- survey %>% 
+  mutate(EdLevel2 = factor(EdLevel, 
+                           levels = c(
+                             "Something else", 
+                             "Primary/elementary school",                                                         
+                             "Secondary school (e.g. American high school, German Realschule or Gymnasium, etc.)",
+                             "Some college/university study without earning a degree",
+                             "Associate degree (A.A., A.S., etc.)",                                               
+                             "Bachelor’s degree (B.A., B.S., B.Eng., etc.)",                                      
+                             "Master’s degree (M.A., M.S., M.Eng., MBA, etc.)",                                   
+                             "Professional degree (JD, MD, Ph.D, Ed.D, etc.)"                                    
+                           ), 
+                           labels = c("Other", 
+                                      "Primary/Elementary", 
+                                      "High School", 
+                                      "Some College",
+                                      "Associate's",
+                                      "Bachelor's",
+                                      "Master's", 
+                                      "Professional Degree"),
+                           ordered = TRUE),
+         AISentiment = factor(AISent, 
+                              levels = c("Very unfavorable", 
+                                         "Unfavorable", 
+                                         "Indifferent", 
+                                         "Very favorable", 
+                                         "Favorable", 
+                                         "Unsure"),
+                              ordered = TRUE)
+         )
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Plotting
+
+Now we can do some basic plots with these variables. To remove the `NA` (or missing values), we'll first drop that from the data with `drop_na()`.
+
+```{r}
+ggplot(survey %>% 
+         select(EdLevel2) %>% 
+         drop_na(), 
+       aes(x = EdLevel2)) + 
+  geom_bar()
+```
+
+Add in some levels to pretty things up.
+
+```{r}
+ggplot(survey %>% 
+         select(EdLevel2) %>% 
+         drop_na(), 
+       aes(x = EdLevel2)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(x = "Education Level",
+       title = "Most Respondents have a Bachelor's or Master's Degree") 
+```
+
+We can involve a second variable by filling in the bars by another variable (here `AISentiment`).
+
+```{r}
+ggplot(survey %>% 
+         select(EdLevel2, AISentiment) %>% 
+         filter(AISentiment != "Unsure") %>%
+         drop_na(), 
+       aes(x = EdLevel2, fill = AISentiment)) + 
+  geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(x = "Education Level",
+       title = "Most Respondents have a Bachelor's or Master's Degree") 
+```
+
+We can bring a third variable in by faceting the plot. This creates the same plot at each value of the faceting variable. This can be done with `facet_wrap()`. We'll consider the `SOAccount` variable which has three values it takes on. That means we'll get three plots out!
+
+```{r}
+ggplot(survey %>% 
+         select(EdLevel2, AISentiment, SOAccount) %>% 
+         filter(AISentiment != "Unsure") %>%
+         drop_na(), 
+       aes(x = EdLevel2, fill = AISentiment)) +
+  geom_bar() +
+  facet_wrap(~SOAccount) + 
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(x = "Education Level",
+       title = "Most Respondents have a Bachelor's or Master's Degree", 
+       subtitle = "Favorable or Very Favorable Opinions of AI are Consistent Across Education Groups\n
+Trends are similar for those with and without a 
+Stack Overflow Account")
+```
+
