@@ -4,7 +4,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 #read in package
 library(tidyverse)
 ```
@@ -46,7 +46,7 @@ survey <- survey %>%
   mutate(EdLevel2 = factor(EdLevel, 
                            levels = c(
                              "Something else", 
-                             "Primary/elementary school",                                                         
+                             "Primary/elementary school",                             
                              "Secondary school (e.g. American high school, German Realschule or Gymnasium, etc.)",
                              "Some college/university study without earning a degree",
                              "Associate degree (A.A., A.S., etc.)",                                               
@@ -67,12 +67,14 @@ survey <- survey %>%
                               levels = c("Very unfavorable", 
                                          "Unfavorable", 
                                          "Indifferent", 
-                                         "Very favorable", 
                                          "Favorable", 
+                                         "Very favorable", 
                                          "Unsure"),
                               ordered = TRUE)
          )
 ```
+
+
 
 ## Plotting
 
@@ -83,7 +85,7 @@ ggplot(survey %>%
          select(EdLevel2) %>% 
          drop_na(), 
        aes(x = EdLevel2)) + 
-  geom_bar()
+  geom_bar() 
 ```
 
 Add in some levels to pretty things up.
@@ -108,6 +110,19 @@ ggplot(survey %>%
          drop_na(), 
        aes(x = EdLevel2, fill = AISentiment)) + 
   geom_bar() +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(x = "Education Level",
+       title = "Most Respondents have a Bachelor's or Master's Degree") 
+```
+In order to get a side-by-side bar plot we can add `position = dodge` in the `geom_bar()` layer. This tells the values of the `fill` variable to 'dodge' or miss rather than be 'stacked' on top (the default).
+
+```{r}
+ggplot(survey %>% 
+         select(EdLevel2, AISentiment) %>% 
+         filter(AISentiment != "Unsure") %>%
+         drop_na(), 
+       aes(x = EdLevel2, fill = AISentiment)) + 
+  geom_bar(position = "dodge") +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
   labs(x = "Education Level",
        title = "Most Respondents have a Bachelor's or Master's Degree") 
