@@ -57,3 +57,7 @@ Similar to day 4, we discussed the implications of fitting a logistic regression
 
 The last day was a working day where the students tried to clean their data and fit some models in order to get ready for their actuarial challenge submission!
 
+Adding math to check: 
+$$\sigma^2$$
+
+Also inline $\sqrt{2}$ is fun
