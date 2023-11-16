@@ -1,3 +1,4 @@
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 # caryAcademy
 
 This repo contains the presentations, applications, and other files associated with lectures given to the Cary Academy 'statculus' class in 2021 and 2023.
