@@ -1,0 +1,382 @@
+---
+title: "Communicating with Data"
+output:
+  xaringan::moon_reader:
+    seal: false
+    lib_dir: libs
+    css: [default, "css/ncsu.css", "css/ncsu-fonts.css"]
+    nature:
+      beforeInit: ["js/ncsu-scale.js"]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "partials/header.html"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Hi! Nice to Meet You
+
+Justin Post - Statistician
+
+
+---
+
+# Hi! Important to Know
+
+Justin Post - Statistician
+
+.pull-left[
+- Father of two 
+]
+
+.pull-right[
+```{r echo = FALSE, fig.align = 'right'}
+knitr::include_graphics("img/wally_louisa.png")
+```
+]
+
+
+---
+
+# Hi! Important to Know
+
+Justin Post - Statistician
+
+.left35[
+- Father of two 
+- Likes to teach stuff
+]
+
+.right65[
+<a href = "https://shiny.stat.ncsu.edu/jbpost2/NormalApproximation/" target = "_blank">
+```{r echo = FALSE, fig.align = 'right', out.width = "900px"}
+knitr::include_graphics("img/norm_approx.png")
+```
+</a>
+]
+
+
+---
+
+# Hi! Important to Know
+
+Justin Post - Statistician
+
+.pull-left[
+- Father of two 
+- Likes to teach stuff
+- Hangs with other teachers
+]
+
+.pull-right[
+```{r echo = FALSE, fig.align = 'right'}
+knitr::include_graphics("img/craig_kristi.png")
+```
+]
+
+
+---
+
+# Goals!
+
+.pull-left[
+- Learn some data visualization best practices!
+
+- Create a poster?
+]
+
+
+---
+
+# Goals!
+
+.pull-left[
+- Learn some data visualization best practices!
+
+- Create a poster?
+
+- Win a contest?!?
+]
+
+.pull-right[
+```{r, echo = FALSE, out.width='300px'}
+knitr::include_graphics("img/competition.jpg")
+```
+]
+
+---
+
+# Why Data Vis?
+
+- Numbers are hard for people...
+
+- A picture is worth a thousand words
+
+- Caveat! Visual must be clear and purposeful
+
+
+---
+
+# Motivation
+
+```{r echo = FALSE, fig.align = 'right', out.height='500px'}
+knitr::include_graphics("img/coffee.png")
+```
+
+---
+
+# Motivation
+
+```{r echo = FALSE, fig.align = 'right'}
+knitr::include_graphics("img/covid_graph.png")
+```
+
+---
+
+# Motivation
+
+```{r echo = FALSE, fig.align = 'right', out.height='500px'}
+knitr::include_graphics("img/welfare.png")
+```
+
+
+---
+
+# Motivation
+
+```{r echo = FALSE, fig.align = 'right', out.height='500px'}
+knitr::include_graphics("img/career_earnings.png")
+```
+
+
+---
+
+# Motivation
+
+```{r echo = FALSE, fig.align = 'right', out.height='500px'}
+knitr::include_graphics("img/crime.png")
+```
+
+
+---
+
+# Motivation
+
+```{r echo = FALSE, fig.align = 'right', out.height='500px'}
+knitr::include_graphics("img/tobacco.png")
+```
+
+
+---
+
+# How to Summarize Data?
+
+- Depends on data type:  
+
+    + Categorical (Qualitative) variable - entries are a label or attribute   
+    + Numeric (Quantitative) variable - entries are a numerical value where math can be performed
+
+```{r, echo = FALSE, out.width="400px", fig.align='center'}
+knitr::include_graphics("img/variableTypes.png")
+```
+
+What do we generally look to describe?
+
+
+---
+
+# How to Summarize Data?
+
+- Depends on data type:  
+
+    + Categorical (Qualitative) variable - entries are a label or attribute   
+    + Numeric (Quantitative) variable - entries are a numerical value where math can be performed
+
+```{r, echo = FALSE, out.width="400px", fig.align='center'}
+knitr::include_graphics("img/variableTypes.png")
+```
+
+- Try to describe the distribution or a summary of that distribution
+
+    + Often across groups for comparison!
+
+
+---
+
+# Best Practices
+
+[Urban Institute](https://urbaninstitute.github.io/graphics-styleguide/) has great tips!
+
+- Things to avoid
+
+    + Nonzero baselines on bar charts
+    + Can use percent change or difference as an alternative
+
+- Example: [Docket Management](https://cjil.shinyapps.io/MeasuringJustice/) -> Docket Change
+
+---
+
+# Best Practices
+
+[Urban Institute](https://urbaninstitute.github.io/graphics-styleguide/) has great tips!
+
+- Things to avoid
+
+    + Dual axis charts are bad
+    + Use multiple graphs next to each other
+
+- Example: [Repeat Involvement](https://cjil.shinyapps.io/MeasuringJustice/) -> Overview
+
+
+---
+
+# Best Practices
+
+[Urban Institute](https://urbaninstitute.github.io/graphics-styleguide/) has great tips!
+
+- Things to avoid
+
+    + Pie charts with too many slices are bad. 
+    + Keep the overall number of slices in pie charts to fewer than 5
+    + Avoid too many categories
+    + Keep the number of categories in any graph to fewer than seven
+    + Continuums are ok
+
+- Example: [County Profiles](https://cjil.shinyapps.io/MeasuringJustice/) -> Population -> Urban-Rural Map
+- Example: [Population Map](https://cjil.shinyapps.io/MeasuringJustice/) -> Population -> Population Map
+
+
+---
+
+# Recommendations
+
+Keep it simple
+
+- Graph should speak for itself!
+- Consider what you want your reader to come away with
+- Call out important items
+
+- Example: [County Profiles](https://cjil.shinyapps.io/MeasuringJustice/) -> Economy -> Income (choose Ashe)
+
+
+---
+
+# Recommendations
+
+Create small multiples
+
+- Create a series of smaller graphs to break a complex graph into smaller pieces 
+- Can create sense of movement or time
+
+- Example: [Cost of Engagement Ring](https://www.nytimes.com/interactive/2019/02/13/upshot/engagement-rings-cost-two-weeks-pay.html)
+
+
+---
+
+# Recommendations
+
+Provide a baseline or reference when possible
+
+- Not needed if percent change or difference is graphed
+- Useful to give context
+
+- Example: [Pretrial Failures](https://cjil.shinyapps.io/MeasuringJustice/) -> Court Non-Appearance -> Race (choose a county)
+- Example: [Global Temperature](https://www.nytimes.com/2020/04/23/learning/whats-going-on-in-this-graph-global-temperature-change.html)
+
+
+---
+
+# Recommendation
+
+Use active, concise titles
+
+- Consider “Labor Force Participation Rate, Men and Women, 1950–2019,” vs “The Labor Force Participation Rate Has Declined for Men and Increased for Women.” 
+
+- Subtitles can be used to denote specifics about the data, such as time periods, frequency, units, or geography.
+
+- Example: [Segregation in Low-Wage Workforce](https://www.workrisenetwork.org/features/segregation-low-wage-workforce)
+
+
+---
+
+# Recommendation
+
+When possible, avoid using legends and instead directly label the data on the graph. 
+
+Mark outliers that are significantly different than others.
+
+- Example: [Mystery of the Missing Bus Riders](https://www.nytimes.com/2020/04/02/learning/whats-going-on-in-this-graph-bus-ridership-in-metropolitan-areas.html)
+
+---
+
+# Recommendation
+
+When possible, avoid using legends and instead directly label the data on the graph. 
+
+Mark outliers that are significantly different than others.
+
+- Example: [Mystery of the Missing Bus Riders](https://www.nytimes.com/2020/04/02/learning/whats-going-on-in-this-graph-bus-ridership-in-metropolitan-areas.html)
+
+Generally, find visuals that speak to you!
+
+- Many good examples [at the NY Times](https://www.nytimes.com/2020/06/10/learning/over-60-new-york-times-graphs-for-students-to-analyze.html) and [at the Urban Institute (data tools)](https://www.urban.org/stories-data-tools-and-blogs)
+
+
+---
+
+# Questions Around Census Data
+
+.pull-left[
+Reintroduce it
+
+- Discuss past ethical practices around data anonymity
+
+Go through the online interface
+
+- Develop a Q of interest based on the data we have
+
+    - What data answers this question?
+
+    - What is the key point to get across?
+    
+    - Sketch out what a visual might look like
+]
+
+.pull-right[
+```{r, echo = FALSE, out.width='500px'}
+knitr::include_graphics("img/teamwork.jpg")
+```
+]
+
+
+---
+ 
+# Obtaining Census Data
+
+API basics
+
+tidycensus package
+
+pums
+acs
+
+Cleaning some data
+
+
+---
+
+# They get data and clean it make vis
+
+---
+
+# Creating an Effective Poster
+
+Talk though .Rmd for that with examples

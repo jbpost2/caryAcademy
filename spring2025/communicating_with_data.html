@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Communicating with Data</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs-2.21/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/5235085b15.js"></script>
+    <link rel="stylesheet" href="css/ncsu.css" type="text/css" />
+    <link rel="stylesheet" href="css/ncsu-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+# Hi! Nice to Meet You
+
+Justin Post - Statistician
+
+
+---
+
+# Hi! Important to Know
+
+Justin Post - Statistician
+
+.pull-left[
+- Father of two 
+]
+
+.pull-right[
+&lt;img src="img/wally_louisa.png" width="1333" style="display: block; margin: auto 0 auto auto;" /&gt;
+]
+
+
+---
+
+# Hi! Important to Know
+
+Justin Post - Statistician
+
+.left35[
+- Father of two 
+- Likes to teach stuff
+]
+
+.right65[
+&lt;a href = "https://shiny.stat.ncsu.edu/jbpost2/NormalApproximation/" target = "_blank"&gt;
+&lt;img src="img/norm_approx.png" width="900px" style="display: block; margin: auto 0 auto auto;" /&gt;
+&lt;/a&gt;
+]
+
+
+---
+
+# Hi! Important to Know
+
+Justin Post - Statistician
+
+.pull-left[
+- Father of two 
+- Likes to teach stuff
+- Hangs with other teachers
+]
+
+.pull-right[
+&lt;img src="img/craig_kristi.png" width="739" style="display: block; margin: auto 0 auto auto;" /&gt;
+]
+
+
+---
+
+# Goals!
+
+.pull-left[
+- Learn some data visualization best practices!
+
+- Create a poster?
+]
+
+
+---
+
+# Goals!
+
+.pull-left[
+- Learn some data visualization best practices!
+
+- Create a poster?
+
+- Win a contest?!?
+]
+
+.pull-right[
+&lt;img src="img/competition.jpg" width="300px" /&gt;
+]
+
+---
+
+# Why Data Vis?
+
+- Numbers are hard for people...
+
+- A picture is worth a thousand words
+
+- Caveat! Visual must be clear and purposeful
+
+
+---
+
+# Motivation
+
+&lt;img src="img/coffee.png" width="488" height="500px" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+---
+
+# Motivation
+
+&lt;img src="img/covid_graph.png" width="832" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+---
+
+# Motivation
+
+&lt;img src="img/welfare.png" width="533" height="500px" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+
+---
+
+# Motivation
+
+&lt;img src="img/career_earnings.png" width="1753" height="500px" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+
+---
+
+# Motivation
+
+&lt;img src="img/crime.png" width="2133" height="500px" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+
+---
+
+# Motivation
+
+&lt;img src="img/tobacco.png" width="1427" height="500px" style="display: block; margin: auto 0 auto auto;" /&gt;
+
+
+---
+
+# How to Summarize Data?
+
+- Depends on data type:  
+
+    + Categorical (Qualitative) variable - entries are a label or attribute   
+    + Numeric (Quantitative) variable - entries are a numerical value where math can be performed
+
+&lt;img src="img/variableTypes.png" width="400px" style="display: block; margin: auto;" /&gt;
+
+What do we generally look to describe?
+
+
+---
+
+# How to Summarize Data?
+
+- Depends on data type:  
+
+    + Categorical (Qualitative) variable - entries are a label or attribute   
+    + Numeric (Quantitative) variable - entries are a numerical value where math can be performed
+
+&lt;img src="img/variableTypes.png" width="400px" style="display: block; margin: auto;" /&gt;
+
+- Try to describe the distribution or a summary of that distribution
+
+    + Often across groups for comparison!
+
+
+---
+
+# Best Practices
+
+[Urban Institute](https://urbaninstitute.github.io/graphics-styleguide/) has great tips!
+
+- Things to avoid
+
+    + Nonzero baselines on bar charts
+    + Can use percent change or difference as an alternative
+
+- Example: [Docket Management](https://cjil.shinyapps.io/MeasuringJustice/) -&gt; Docket Change
+
+---
+
+# Best Practices
+
+[Urban Institute](https://urbaninstitute.github.io/graphics-styleguide/) has great tips!
+
+- Things to avoid
+
+    + Dual axis charts are bad
+    + Use multiple graphs next to each other
+
+- Example: [Repeat Involvement](https://cjil.shinyapps.io/MeasuringJustice/) -&gt; Overview
+
+
+---
+
+# Best Practices
+
+[Urban Institute](https://urbaninstitute.github.io/graphics-styleguide/) has great tips!
+
+- Things to avoid
+
+    + Pie charts with too many slices are bad. 
+    + Keep the overall number of slices in pie charts to fewer than 5
+    + Avoid too many categories
+    + Keep the number of categories in any graph to fewer than seven
+    + Continuums are ok
+
+- Example: [County Profiles](https://cjil.shinyapps.io/MeasuringJustice/) -&gt; Population -&gt; Urban-Rural Map
+- Example: [Population Map](https://cjil.shinyapps.io/MeasuringJustice/) -&gt; Population -&gt; Population Map
+
+
+---
+
+# Recommendations
+
+Keep it simple
+
+- Graph should speak for itself!
+- Consider what you want your reader to come away with
+- Call out important items
+
+- Example: [County Profiles](https://cjil.shinyapps.io/MeasuringJustice/) -&gt; Economy -&gt; Income (choose Ashe)
+
+
+---
+
+# Recommendations
+
+Create small multiples
+
+- Create a series of smaller graphs to break a complex graph into smaller pieces 
+- Can create sense of movement or time
+
+- Example: [Cost of Engagement Ring](https://www.nytimes.com/interactive/2019/02/13/upshot/engagement-rings-cost-two-weeks-pay.html)
+
+
+---
+
+# Recommendations
+
+Provide a baseline or reference when possible
+
+- Not needed if percent change or difference is graphed
+- Useful to give context
+
+- Example: [Pretrial Failures](https://cjil.shinyapps.io/MeasuringJustice/) -&gt; Court Non-Appearance -&gt; Race (choose a county)
+- Example: [Global Temperature](https://www.nytimes.com/2020/04/23/learning/whats-going-on-in-this-graph-global-temperature-change.html)
+
+
+---
+
+# Recommendation
+
+Use active, concise titles
+
+- Consider “Labor Force Participation Rate, Men and Women, 1950–2019,” vs “The Labor Force Participation Rate Has Declined for Men and Increased for Women.” 
+
+- Subtitles can be used to denote specifics about the data, such as time periods, frequency, units, or geography.
+
+- Example: [Segregation in Low-Wage Workforce](https://www.workrisenetwork.org/features/segregation-low-wage-workforce)
+
+
+---
+
+# Recommendation
+
+When possible, avoid using legends and instead directly label the data on the graph. 
+
+Mark outliers that are significantly different than others.
+
+- Example: [Mystery of the Missing Bus Riders](https://www.nytimes.com/2020/04/02/learning/whats-going-on-in-this-graph-bus-ridership-in-metropolitan-areas.html)
+
+
+Generally, find visuals that speak to you!
+
+- Many good examples [at the NY Times](https://www.nytimes.com/2020/06/10/learning/over-60-new-york-times-graphs-for-students-to-analyze.html) and [at the Urban Institute (data tools)](https://www.urban.org/stories-data-tools-and-blogs)
+
+
+---
+
+# Questions Around Census Data
+
+.pull-left[
+Reintroduce it
+
+- Discuss past ethical practices around data anonymity
+
+Go through the online interface
+
+- Develop a Q of interest based on the data we have
+
+    - What data answers this question?
+
+    - What is the key point to get across?
+    
+    - Sketch out what a visual might look like
+]
+
+.pull-right[
+&lt;img src="img/teamwork.jpg" width="500px" /&gt;
+]
+
+
+---
+ 
+# Obtaining Census Data
+
+API basics
+
+tidycensus package
+
+pums
+acs
+
+Cleaning some data
+
+
+---
+
+# They get data and clean it make vis
+
+---
+
+# Creating an Effective Poster
+
+Talk though .Rmd for that with examples
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="js/ncsu-scale.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
