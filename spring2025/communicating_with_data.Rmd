@@ -256,7 +256,7 @@ knitr::include_graphics("img/variableTypes.png")
 
 ---
 
-# Recommendations
+# Recommendation
 
 Keep it simple
 
@@ -269,7 +269,7 @@ Keep it simple
 
 ---
 
-# Recommendations
+# Recommendation
 
 Create small multiples
 
@@ -281,7 +281,7 @@ Create small multiples
 
 ---
 
-# Recommendations
+# Recommendation
 
 Provide a baseline or reference when possible
 
@@ -379,4 +379,51 @@ Cleaning some data
 
 # Creating an Effective Poster
 
-Talk though .Rmd for that with examples
+Lots of ways to create a 'poster'
+
+- [Some are bad]((https://colinpurrington.com/2012/02/example-of-bad-scientific-poster/)...
+
+---
+
+# Creating an Effective Poster
+
+Lots of ways to create a 'poster'
+
+- [Some are bad]((https://colinpurrington.com/2012/02/example-of-bad-scientific-poster/)...
+
+- Good ones generally follow same idea as good visuals - be concise and easy to read!
+
+```{r, echo = FALSE, out.width='500px'}
+knitr::include_graphics("img/good_poster.jpg")
+```
+
+
+---
+
+# Good Posters in R!
+
+Easy to do great posters using the [`posterdown`](https://github.com/brentthorne/posterdown) package
+
+- [Example](https://github.com/jbpost2/Intro_Data_Science_Project_USCOTS_2023/blob/main/Poster.pdf)
+
+
+
+---
+
+# Good Posters in R!
+
+Easy to do great posters using the [`posterdown`](https://github.com/brentthorne/posterdown) package
+
+- [Example](https://github.com/jbpost2/Intro_Data_Science_Project_USCOTS_2023/blob/main/Poster.pdf)
+
+Install the `posterdown` package 
+
+```{r, eval = FALSE}
+install.packages("posterdown")
+```
+
+- [Lots of options](https://github.com/brentthorne/posterdown/wiki/posterdown_betterland) for creating..
+
+- Check out [`Poster.Rmd`](https://github.com/jbpost2/Intro_Data_Science_Project_USCOTS_2023/blob/main/Poster.Rmd) 
+
+    + Modify from there!
