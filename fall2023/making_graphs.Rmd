@@ -1,0 +1,173 @@
+---
+title: "Creating graphs"
+author: "Craig"
+date: '2023-11-04'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("tidyverse")
+```
+
+## How to create graphs from the Stack Overflow survey
+
+Each of the questions have been formatted so that R can easily read and manipulate the results. Each question is stored as it's own file at the following website.
+
+<https://javastats.com/data/asa_data_challenge/>
+
+To analyze the results of a single question we must complete the follwoing:
+
+#1 Read in the data
+
+Identify the question of interest. Right click on the hyperlink for that question and copy the link. We can then use read_csv to read in the file from the website.
+
+```{r}
+# Reading in the employment question results
+
+employment <- read_csv("https://javastats.com/data/asa_data_challenge/survey_results_expand_on_column_Employment.csv")
+full_data <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/survey_results_public.csv")
+```
+
+When you examine the data you will see that has created a binary option for each response, 1 for present and 0 for not present. In order to summarize this data we need to find how many 1's and 0's are present for each column. 
+
+#2 Summarize the data and store it in a data frame
+
+First we can find the column sums. 
+```{r}
+summary_employ <-colSums(employment)
+
+```
+
+This creates a single vector with the column sums. We will want to attach the survey outcome to each of these numbers. Luckily, this vector is a named vector meaning the name information is present. We can extract it and save it as its own vector. 
+
+```{r}
+employment_names <- names(summary_employ)
+```
+
+Now we just need to put these two vectors together in a data frame.
+
+```{r}
+employment_data <- data.frame(employment_names, summary_employ)
+employment_data
+```
+
+Notice that the response id variable has traveled along. We need to remove it.
+
+```{r}
+employment_data <- employment_data[2:10,]
+employment_data
+```
+
+#3 Graph the results
+
+```{r, out.width = "500px"}
+ggplot(data = employment_data, aes(x = employment_names, y = summary_employ )) +
+  geom_bar(stat="identity") + 
+  scale_x_discrete(guide = guide_axis(angle = 45))
+ggplot(data = employment, aes(x = `Employment_Employed, full-time`)) +
+  geom_bar()
+```
+
+## How to analyze results across two questions.
+
+Suppose we wanted to know which languages have been used by people that are employed full time. 
+
+#1 Read in both sets of data
+
+```{r}
+question1 <- read_csv("https://javastats.com/data/asa_data_challenge/survey_results_expand_on_column_Employment.csv")
+
+question2 <- read_csv("https://javastats.com/data/asa_data_challenge/survey_results_expand_on_column_LanguageHaveWorkedWith.csv")
+```
+
+
+#2 Join these data sets together
+
+```{r}
+combined_data <- left_join(question1, question2)
+```
+
+#3 Subset the data by variable of interest
+
+We want to focus only on the people that are employed fulltime.
+
+```{r}
+full_time <- combined_data %>% filter(`Employment_Employed, full-time` == 1)
+# Notice that the column name is surrounded by back ticks, this is necessary
+# when the variable name has spaces in it
+```
+
+Now we can go through the process we had above for summarizing and graphing the data.
+
+```{r}
+# Find the column sums
+full_time_summary <- colSums(full_time)
+
+# Get the outcome names
+full_time_names <- names(full_time_summary)
+
+# Create a data frame to store both vectors
+full_time_coding <- data.frame(full_time_names, full_time_summary)
+
+# Remove the columns that are not of interest
+full_time_coding <- full_time_coding[11:61,]
+```
+
+For this example, we have 61 different options for programming languages. That is way too many. We can reduce this by focusing on only the most popular outcomes.
+
+```{r}
+full_time_coding %>% arrange(desc(full_time_summary))
+```
+
+The top 10 langauges have more than 10000 responders. We can subset the data to only focus on these languages.
+
+```{r}
+
+full_time_coding_top10 <- full_time_coding %>% filter(full_time_summary > 10000)
+
+```
+
+#4 Graphing the data
+
+```{r}
+plot <- ggplot( data = full_time_coding_top10, aes(x=full_time_names, y = full_time_summary)) +
+          geom_bar(stat="identity") + scale_x_discrete(guide = guide_axis(angle = 45))
+
+plot_data <- combined_data %>% 
+         select(`Employment_Employed, full-time`, LanguageHaveWorkedWith_JavaScript) %>%
+         mutate(FullTime = as.factor(`Employment_Employed, full-time`), 
+                JavaScript = as.factor(LanguageHaveWorkedWith_JavaScript)) %>%
+         select(FullTime, JavaScript)
+ggplot(data = plot_data, aes(x = FullTime, fill = JavaScript)) + geom_bar()
+
+
+plot_data_programming <- combined_data %>% 
+         select(`Employment_Employed, full-time`, LanguageHaveWorkedWith_JavaScript, LanguageHaveWorkedWith_SQL) %>%
+         mutate(FullTime = as.factor(`Employment_Employed, full-time`), 
+                JavaScript = as.factor(LanguageHaveWorkedWith_JavaScript),
+                SQL = as.factor(LanguageHaveWorkedWith_SQL)) %>%
+         select(FullTime, JavaScript, SQL)
+ggplot(data = plot_data_programming, aes(x = FullTime, fill = JavaScript)) + 
+  geom_bar() + 
+  facet_grid(~SQL)
+```
+
+#5 Clean up the labels.
+
+```{r}
+# Convert the summary column to a factor
+
+full_time_coding_top10$full_time_names <- as.factor(full_time_coding_top10$full_time_names)
+
+# Create the labels we want
+responses <- c("all shells", "C#", "C++", "HTML/CSS", "Java", "Javascript", "PHP", "Python", "SQL", "Typescript")
+
+# Attache the labels
+levels(full_time_coding_top10$full_time_names) <- responses
+
+# Graph again
+ggplot( data = full_time_coding_top10, aes(x=full_time_names, y = full_time_summary)) +
+          geom_bar(stat="identity") + scale_x_discrete(guide = guide_axis(angle = 45)) + labs(title = "Languages used by people employed full time", y = "Count", x = "languages")
+```
+

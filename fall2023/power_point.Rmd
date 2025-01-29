@@ -1,0 +1,40 @@
+---
+title: "Untitled"
+author: "Justin Post"
+date: "2023-11-08"
+output: powerpoint_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+## Read in the data
+
+```{r, echo = TRUE}
+employment <- read_csv("https://javastats.com/data/asa_data_challenge/survey_results_expand_on_column_Employment.csv")
+#full_data <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/survey_results_public.csv")
+```
+
+## Graph
+
+```{r, out.width = "500px", echo = FALSE}
+summary_employ <-colSums(employment)
+employment_names <- names(summary_employ)
+employment_data <- data.frame(employment_names, summary_employ)
+employment_data <- employment_data[2:10,]
+
+ggplot(data = employment_data, aes(x = employment_names, y = summary_employ )) +
+  geom_bar(stat="identity") + 
+  scale_x_discrete(guide = guide_axis(angle = 45))
+ggplot(data = employment, aes(x = `Employment_Employed, full-time`)) +
+  geom_bar()
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
