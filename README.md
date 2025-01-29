@@ -57,3 +57,15 @@ Similar to day 4, we discussed the implications of fitting a logistic regression
 ### Day 6
 
 The last day was a working day where the students tried to clean their data and fit some models in order to get ready for their actuarial challenge submission!
+
+
+## 2025 Offering
+
+Schedule:
+
+- 9:30-10:05 Intro & Data Vis Chat
+- 10:05-10:30 Visit Spencer Hamrick's class
+- 10:30-11:30 Census Data & Brainstorming
+- 11:30-12:30 Lunch
+- 12:30-1:15 Tour
+- 1:15-3:00 Obtaining Data, Making a Poster, & Work Time

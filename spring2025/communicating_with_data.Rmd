@@ -73,7 +73,7 @@ Justin Post - Statistician
 .pull-left[
 - Father of two 
 - Likes to teach stuff
-- Hangs with other teachers
+- Hangs with cool people
 ]
 
 .pull-right[
@@ -332,16 +332,72 @@ Generally, find visuals that speak to you!
 
 ---
 
-# Questions Around Census Data
+# Census Data
 
 .pull-left[
-Reintroduce it
+Census! Lots of data... so much data...
 
-- Discuss past ethical practices around data anonymity
+- [Over 130 surveys](https://www.census.gov/programs-surveys/surveys-programs.html?text-list-9d8f872791%3Apage=1#text-list-9d8f872791)!
 
-Go through the online interface
+- One of the largest is the [American Community Survey](https://www.census.gov/programs-surveys/acs/about.html) (ACS)
 
-- Develop a Q of interest based on the data we have
+    + [Subjects](https://www.census.gov/programs-surveys/acs/guidance/subjects.html)
+]
+
+---
+
+# Census Data
+
+.pull-left[
+Census! Lots of data... so much data...
+
+- [Over 130 surveys](https://www.census.gov/programs-surveys/surveys-programs.html?text-list-9d8f872791%3Apage=1#text-list-9d8f872791)!
+
+- One of the largest is the [American Community Survey](https://www.census.gov/programs-surveys/acs/about.html) (ACS)
+
+    + [Subjects](https://www.census.gov/programs-surveys/acs/guidance/subjects.html)
+]
+
+.pull-right[
+Ethically, data is private!
+
+- 70's used a threshold to only show certain tables
+- 90's used swapping of tracts
+- Now, noise injection is used (3 ways). One example: 
+    
+    + At US level, covert to summary form. Noise added to each query.
+    + Post processing done to remove any negatives other invalid values
+    + Then state level is done with constraints that the aggregation must meet the US level data...
+    + Then county, tract, block group, block!
+]
+
+
+---
+
+# Available Data
+
+Data allows for tons of interesting investigations and helps determine federal funding
+
+- Online interface exists but is a bit clunky...
+
+    + [Example](https://data.census.gov/table?g=040XX00US37$0500000&y=2023)
+    + Can get data for multiple years, compare states, counties, etc.
+    + [Full list](https://api.census.gov/data/2023/acs/acs1/variables.html) of variables!
+
+---
+
+# Available Data
+
+Data allows for tons of interesting investigations and helps determine federal funding
+
+- Online interface exists but is a bit clunky...
+
+    + [Example](https://data.census.gov/table?g=040XX00US37$0500000&y=2023)
+    + Can get data for multiple years, compare states, counties, etc.
+    + [Full list](https://api.census.gov/data/2023/acs/acs1/variables.html) of variables!
+
+.pull-left[
+- Develop a question of interest based on the data we have
 
     - What data answers this question?
 
@@ -351,7 +407,7 @@ Go through the online interface
 ]
 
 .pull-right[
-```{r, echo = FALSE, out.width='500px'}
+```{r, echo = FALSE, out.width='400px'}
 knitr::include_graphics("img/teamwork.jpg")
 ```
 ]
@@ -361,19 +417,159 @@ knitr::include_graphics("img/teamwork.jpg")
  
 # Obtaining Census Data
 
-API basics
+Difficult to use online explorer
 
-tidycensus package
+- Insert the API (application program interface)
 
-pums
-acs
+- Note the URL changes as you select different things
 
-Cleaning some data
+- Note the API button on the toolbar!
+
+
+---
+ 
+# Obtaining Census Data
+
+Difficult to use online explorer
+
+- Insert the API (application program interface)
+
+- Note the URL changes as you select different things
+
+- Note the API button on the toolbar!
+
+.pull-left[
+Let's write our own URLs!
+]
+.pull-right[
+```{r, echo = FALSE}
+knitr::include_graphics("img/no-head-shaking.gif")
+```
+]
+
+---
+
+# `tidycensus` Package
+
+`tidycensus` package allows for easy pulling of census data into R!
+
+
+```{r}
+library(tidycensus)
+my_key <- "e267f117801b2ef741e54620602b0903c5f4d3c8"
+students_data <- get_acs(variables = "B14002_001E", 
+        geography = "county", 
+        geometry = TRUE,
+        survey = "acs5",
+        show_call = TRUE, 
+        state = "NC",
+        year = 2023,
+        key = my_key)
+```
+
+---
+
+# `tidycensus` Package
+
+```{r}
+students_data
+```
+
+---
+
+# `tidycensus` Package
+
+```{r, out.height="400px"}
+library(ggplot2)
+ggplot(students_data, aes(y = estimate, x = variable)) + geom_boxplot()
+```
+
+---
+
+# `tidycensus` Package
+
+```{r}
+students_data_SC <- get_acs(variables = "B14002_001E", geography = "county", geometry = TRUE,
+        survey = "acs5", state = "SC", year = 2023, key = my_key)
+library(dplyr)
+students_data <- students_data |>
+  mutate(state = "NC") 
+students_data_SC <- students_data_SC |>
+  mutate(state = "SC")
+students <- rbind(students_data, students_data_SC)
+```
 
 
 ---
 
-# They get data and clean it make vis
+# `tidycensus` Package
+
+```{r, out.height="400px"}
+ggplot(students, aes(y = estimate, x = state)) + geom_boxplot()
+```
+
+---
+
+# `tidycensus` Package
+
+```{r, out.width="700px", out.height="450px"}
+students_data |> 
+  mapview::mapview(zcol = "estimate", layer.name = "# of Students (9-12th grade)")
+```
+
+
+---
+
+# `tidycensus` Package
+
+Census doesn't give out individual data - some data will be hidden with the `acs` data
+
+- `pums` allows for pseudo individual level data!
+
+```{r}
+school_micro <- get_pums(
+  variables = "SCH", 
+  state = "NC",
+  year = 2023,
+  show_call = TRUE,
+  survey = "acs1",
+  key = my_key
+  )
+school_micro
+```
+
+---
+
+# `tidycensus` Package
+
+Must use weights here though!
+
+```{r}
+sum(school_micro$PWGTP)
+```
+
+---
+
+# `tidycensus` Package
+
+`ggplot()` has a `weight` argument
+
+```{r, out.height="325px"}
+school_micro |> 
+  mutate(school = factor(SCH, levels = c("0", "1", "2", "3"), 
+                         labels = c("< 3yrs old", "No school",
+                                    "Public",  "Private"))) |>
+  ggplot(aes(x = school, weight = PWGTP)) + geom_bar() + theme(axis.text.x = element_text(angle = 45))
+```
+
+
+---
+
+# Ok, go?
+
+`View(pums_variables)` useful
+
+
 
 ---
 
